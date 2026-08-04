@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 type Pokemon = {
@@ -18,7 +19,9 @@ export default async function DetallePokemon({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
+    next: { revalidate: 3600 },
+  });
 
   if (!res.ok) {
     return <p>No existe ese Pokémon.</p>;
@@ -32,7 +35,12 @@ export default async function DetallePokemon({
       <h1>{pokemon.name}</h1>
       <p>Número: {pokemon.id}</p>
       {pokemon.sprites.front_default && (
-        <img src={pokemon.sprites.front_default} alt={pokemon.name} />
+        <Image
+          src={pokemon.sprites.front_default}
+          alt={pokemon.name}
+          width={150}
+          height={150}
+        />
       )}
       <h2>Stats</h2>
       <ul>
