@@ -1,4 +1,3 @@
-import Link from "next/link";
 type Pokemon = {
   id: number;
   name: string;
@@ -18,14 +17,15 @@ export default async function DetallePokemon({
 }) {
   const { id } = await params;
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+
   if (!res.ok) {
     return <p>No existe ese Pokémon.</p>;
   }
+
   const pokemon: Pokemon = await res.json();
 
   return (
     <div>
-      <Link href="/">← Volver</Link>
       <h1>{pokemon.name}</h1>
       <p>Número: {pokemon.id}</p>
       {pokemon.sprites.front_default && (
