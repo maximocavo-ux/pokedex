@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type Pokemon = {
   id: number;
   name: string;
@@ -26,6 +28,7 @@ export default async function DetallePokemon({
 
   return (
     <div>
+      <Link href="/">← Volver</Link>
       <h1>{pokemon.name}</h1>
       <p>Número: {pokemon.id}</p>
       {pokemon.sprites.front_default && (
