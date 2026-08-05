@@ -109,8 +109,6 @@ export default function PokemonList({ pokemones }: { pokemones: Pokemon[] }) {
                     {t.type.name}
                   </span>
                 ))}
-                {" — "}
-                {pokemon.types.map((t) => t.type.name).join(", ")}
               </Link>
             </li>
           ))}
