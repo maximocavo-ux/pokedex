@@ -24,12 +24,37 @@ export default function PokemonList({ pokemones }: { pokemones: Pokemon[] }) {
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Buscar Pokémon..."
-        value={busqueda}
-        onChange={(e) => setBusqueda(e.target.value)}
-      />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          border: "1px solid #ccc",
+          borderRadius: "8px",
+          padding: "4px 8px",
+          width: "fit-content",
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Buscar Pokémon..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          style={{ border: "none", outline: "none" }}
+        />
+        {busqueda && (
+          <button
+            onClick={() => setBusqueda("")}
+            style={{
+              border: "none",
+              background: "none",
+              cursor: "pointer",
+              fontSize: "16px",
+            }}
+          >
+            ×
+          </button>
+        )}
+      </div>
       <ul>
         {filtrados.map((pokemon) => (
           <li key={pokemon.id}>
