@@ -23,12 +23,21 @@ export default async function DetallePokemon({
   const { id } = await params;
   const idNumero = Number(id);
 
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
-    next: { revalidate: 3600 },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
+      next: { revalidate: 3600 },
+    });
+  } catch (error) {
+    throw new Error("No se pudo conectar con la PokéAPI. Revisá tu conexión.");
+  }
+
+  if (res.status === 404) {
+    return <p>No existe ese Pokémon.</p>;
+  }
 
   if (!res.ok) {
-    return <p>No existe ese Pokémon.</p>;
+    throw new Error(`La PokéAPI respondió con un error (${res.status}).`);
   }
 
   const pokemon: Pokemon = await res.json();
