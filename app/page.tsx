@@ -1,5 +1,4 @@
-import Image from "next/image";
-import Link from "next/link";
+import PokemonList from "./PokemonList";
 
 type PokemonListItem = {
   name: string;
@@ -45,25 +44,7 @@ export default async function Home() {
   return (
     <div>
       <h1>Pokédex</h1>
-      <ul>
-        {pokemones.map((pokemon) => (
-          <li key={pokemon.id}>
-            <Link href={`/pokemon/${pokemon.id}`}>
-              {pokemon.sprites.front_default && (
-                <Image
-                  src={pokemon.sprites.front_default}
-                  alt={pokemon.name}
-                  width={96}
-                  height={96}
-                />
-              )}
-              {pokemon.name}
-              {" — "}
-              {pokemon.types.map((t) => t.type.name).join(", ")}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <PokemonList pokemones={pokemones} />
     </div>
   );
 }
