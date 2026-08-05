@@ -55,25 +55,30 @@ export default function PokemonList({ pokemones }: { pokemones: Pokemon[] }) {
           </button>
         )}
       </div>
-      <ul>
-        {filtrados.map((pokemon) => (
-          <li key={pokemon.id}>
-            <Link href={`/pokemon/${pokemon.id}`}>
-              {pokemon.sprites.front_default && (
-                <Image
-                  src={pokemon.sprites.front_default}
-                  alt={pokemon.name}
-                  width={96}
-                  height={96}
-                />
-              )}
-              {pokemon.name}
-              {" — "}
-              {pokemon.types.map((t) => t.type.name).join(", ")}
-            </Link>
-          </li>
-        ))}
-      </ul>
+
+      {filtrados.length === 0 ? (
+        <p>No se encontró ningún Pokémon con ese nombre.</p>
+      ) : (
+        <ul>
+          {filtrados.map((pokemon) => (
+            <li key={pokemon.id}>
+              <Link href={`/pokemon/${pokemon.id}`}>
+                {pokemon.sprites.front_default && (
+                  <Image
+                    src={pokemon.sprites.front_default}
+                    alt={pokemon.name}
+                    width={96}
+                    height={96}
+                  />
+                )}
+                {pokemon.name}
+                {" — "}
+                {pokemon.types.map((t) => t.type.name).join(", ")}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
