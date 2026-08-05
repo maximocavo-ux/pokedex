@@ -65,27 +65,55 @@ export default function PokemonList({ pokemones }: { pokemones: Pokemon[] }) {
         style={{
           display: "flex",
           alignItems: "center",
+          gap: "8px",
+          width: "280px",
+          height: "32px",
+          borderRadius: "16px",
           border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "4px 8px",
-          width: "fit-content",
+          padding: "8px 16px 8px 12px",
+          boxSizing: "border-box",
         }}
       >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#888"
+          strokeWidth="2"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+
+        <label htmlFor="busqueda-pokemon" style={{ display: "none" }}>
+          Buscar Pokémon por nombre
+        </label>
         <input
-          type="text"
+          id="busqueda-pokemon"
+          type="search"
           placeholder="Buscar Pokémon..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          style={{ border: "none", outline: "none" }}
+          style={{
+            border: "none",
+            outline: "none",
+            flex: 1,
+            fontSize: "14px",
+          }}
         />
+
         {busqueda && (
           <button
             onClick={() => setBusqueda("")}
+            aria-label="Limpiar búsqueda"
             style={{
               border: "none",
               background: "none",
               cursor: "pointer",
               fontSize: "16px",
+              padding: 0,
             }}
           >
             ×
