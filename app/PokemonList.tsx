@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -36,11 +36,27 @@ const coloresPorTipo: Record<string, string> = {
   steel: "#B8B8D0",
 };
 
+function normalizar(texto: string) {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 export default function PokemonList({ pokemones }: { pokemones: Pokemon[] }) {
   const [busqueda, setBusqueda] = useState("");
+  const [busquedaDebounced, setBusquedaDebounced] = useState("");
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setBusquedaDebounced(busqueda);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [busqueda]);
 
   const filtrados = pokemones.filter((pokemon) =>
-    pokemon.name.includes(busqueda.toLowerCase())
+    normalizar(pokemon.name).includes(normalizar(busquedaDebounced))
   );
 
   return (
