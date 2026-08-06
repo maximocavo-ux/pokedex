@@ -1,21 +1,11 @@
 "use client";
 
+import type { Pokemon } from "./lib/pokeapi";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { coloresPorTipo } from "./coloresPorTipo";
-
-type Pokemon = {
-  id: number;
-  name: string;
-  sprites: {
-    front_default: string | null;
-  };
-  types: {
-    type: { name: string };
-  }[];
-};
 
 function normalizar(texto: string) {
   return texto

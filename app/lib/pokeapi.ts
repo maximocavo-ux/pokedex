@@ -1,0 +1,97 @@
+const BASE_URL = "https://pokeapi.co/api/v2";
+const TIMEOUT_MS = 8000;
+const REVALIDATE_SEGUNDOS = 3600;
+
+export type NamedAPIResource = {
+  name: string;
+  url: string;
+};
+
+export type NamedAPIResourceList = {
+  count: number;
+  results: NamedAPIResource[];
+};
+
+export type Pokemon = {
+  id: number;
+  name: string;
+  height: number;
+  weight: number;
+  sprites: {
+    front_default: string | null;
+  };
+  types: {
+    type: { name: string };
+  }[];
+  stats: {
+    base_stat: number;
+    stat: { name: string };
+  }[];
+};
+
+export type PokemonSpecies = {
+  flavor_text_entries: {
+    flavor_text: string;
+    language: { name: string };
+  }[];
+};
+
+async function fetchConTimeout(url: string): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  try {
+    const res = await fetch(url, {
+      next: { revalidate: REVALIDATE_SEGUNDOS },
+      signal: controller.signal,
+    });
+    return res;
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error(`La PokéAPI no respondió en ${TIMEOUT_MS / 1000}s.`);
+    }
+    throw new Error("No se pudo conectar con la PokéAPI. Revisá tu conexión.");
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+export async function getPokemonList(
+  limit: number
+): Promise<NamedAPIResourceList> {
+  const res = await fetchConTimeout(`${BASE_URL}/pokemon?limit=${limit}`);
+
+  if (!res.ok) {
+    throw new Error(`Error al obtener la lista de Pokémon: ${res.status}`);
+  }
+
+  return res.json();
+}
+
+export async function getPokemonDetail(
+  idOrName: string | number
+): Promise<Pokemon | null> {
+  const res = await fetchConTimeout(`${BASE_URL}/pokemon/${idOrName}`);
+
+  if (res.status === 404) {
+    return null;
+  }
+
+  if (!res.ok) {
+    throw new Error(`Error al obtener el Pokémon ${idOrName}: ${res.status}`);
+  }
+
+  return res.json();
+}
+
+export async function getPokemonSpecies(
+  idOrName: string | number
+): Promise<PokemonSpecies> {
+  const res = await fetchConTimeout(`${BASE_URL}/pokemon-species/${idOrName}`);
+
+  if (!res.ok) {
+    throw new Error(`Error al obtener la especie ${idOrName}: ${res.status}`);
+  }
+
+  return res.json();
+}
