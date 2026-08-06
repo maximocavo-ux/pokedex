@@ -1,17 +1,174 @@
 "use client";
 
-import type { Pokemon } from "./lib/pokeapi";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import type { Pokemon } from "./lib/pokeapi";
 import { coloresPorTipo } from "./coloresPorTipo";
+import {
+  CARD_ANCHO,
+  CARD_ALTO,
+  SPRITE_TAMANIO,
+  NUMERO_ALTO,
+  NOMBRE_ALTO,
+} from "./pokemonCardDimensions";
 
 function normalizar(texto: string) {
   return texto
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
+}
+
+function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
+  const colorFondo = coloresPorTipo[pokemon.types[0]?.type.name] || "#eee";
+
+  return (
+    <Link
+      href={`/pokemon/${pokemon.id}`}
+      style={{ textDecoration: "none", color: "inherit" }}
+    >
+      <div
+        style={{
+          width: CARD_ANCHO,
+          height: CARD_ALTO,
+          position: "relative",
+          borderRadius: "8px",
+          boxShadow: "0 1px 3px 1px rgba(0,0,0,0.20)",
+          backgroundColor: "white",
+        }}
+      >
+        <p
+          style={{
+            position: "absolute",
+            top: 4,
+            left: 8,
+            right: 8,
+            height: NUMERO_ALTO,
+            margin: 0,
+            fontSize: "8px",
+            color: "#999",
+          }}
+        >
+          #{pokemon.id}
+        </p>
+
+        {pokemon.sprites.front_default && (
+          <div
+            style={{
+              position: "absolute",
+              top: "18px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: SPRITE_TAMANIO,
+              height: SPRITE_TAMANIO,
+            }}
+          >
+            <Image
+              src={pokemon.sprites.front_default}
+              alt={pokemon.name}
+              fill
+              sizes="72px"
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        )}
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: NOMBRE_ALTO,
+            backgroundColor: `${colorFondo}33`,
+            borderRadius: "0 0 8px 8px",
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            paddingBottom: "4px",
+          }}
+        >
+          <span style={{ fontSize: "10px", textAlign: "center" }}>
+            {pokemon.name}
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+export function PokemonCardSkeleton() {
+  return (
+    <div
+      role="status"
+      aria-busy="true"
+      aria-label="Cargando Pokémon"
+      style={{
+        width: CARD_ANCHO,
+        height: CARD_ALTO,
+        position: "relative",
+        borderRadius: "8px",
+        boxShadow: "0 1px 3px 1px rgba(0,0,0,0.20)",
+        backgroundColor: "white",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: 4,
+          left: 8,
+          width: "24px",
+          height: "8px",
+          borderRadius: "4px",
+          backgroundColor: "#e0e0e0",
+        }}
+        className="skeleton-shimmer"
+      />
+
+      <div
+        style={{
+          position: "absolute",
+          top: "18px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: SPRITE_TAMANIO,
+          height: SPRITE_TAMANIO,
+          borderRadius: "50%",
+          backgroundColor: "#e0e0e0",
+        }}
+        className="skeleton-shimmer"
+      />
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: NOMBRE_ALTO,
+          backgroundColor: "#f0f0f0",
+          borderRadius: "0 0 8px 8px",
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "center",
+          paddingBottom: "8px",
+        }}
+      >
+        <div
+          style={{
+            width: "60px",
+            height: "10px",
+            borderRadius: "4px",
+            backgroundColor: "#e0e0e0",
+          }}
+          className="skeleton-shimmer"
+        />
+      </div>
+    </div>
+  );
 }
 
 function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
@@ -139,39 +296,18 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
       {ordenados.length === 0 ? (
         <p>No se encontró ningún Pokémon con ese nombre.</p>
       ) : (
-        <ul>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(3, ${CARD_ANCHO}px)`,
+            gap: "8px",
+            padding: "12px 0",
+          }}
+        >
           {ordenados.map((pokemon) => (
-            <li key={pokemon.id}>
-              <Link href={`/pokemon/${pokemon.id}?orden=${orden}`}>
-                {pokemon.sprites.front_default && (
-                  <Image
-                    src={pokemon.sprites.front_default}
-                    alt={pokemon.name}
-                    width={96}
-                    height={96}
-                  />
-                )}
-                {pokemon.name}
-                {" "}
-                {pokemon.types.map((t) => (
-                  <span
-                    key={t.type.name}
-                    style={{
-                      backgroundColor: coloresPorTipo[t.type.name] || "#999",
-                      color: "white",
-                      padding: "2px 8px",
-                      borderRadius: "999px",
-                      fontSize: "12px",
-                      marginRight: "4px",
-                    }}
-                  >
-                    {t.type.name}
-                  </span>
-                ))}
-              </Link>
-            </li>
+            <PokemonCard key={pokemon.id} pokemon={pokemon} />
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
