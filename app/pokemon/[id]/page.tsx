@@ -35,11 +35,16 @@ function limpiarDescripcion(texto: string) {
 
 export default async function DetallePokemon({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ orden?: string }>;
 }) {
   const { id } = await params;
+  const { orden } = await searchParams;
   const idNumero = Number(id);
+
+  const hrefVolver = orden ? `/?orden=${orden}` : "/";
 
   let res: Response;
   let resSpecies: Response;
@@ -102,7 +107,7 @@ export default async function DetallePokemon({
         color: textoSobreFondo,
       }}
     >
-      <Link href="/" style={{ color: textoSobreFondo }}>
+      <Link href={hrefVolver} style={{ color: textoSobreFondo }}>
         ← Volver
       </Link>
       <h1>{pokemon.name}</h1>
@@ -111,7 +116,7 @@ export default async function DetallePokemon({
       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
         {hayAnterior ? (
           <Link
-            href={`/pokemon/${idNumero - 1}`}
+            href={`/pokemon/${idNumero - 1}${orden ? `?orden=${orden}` : ""}`}
             aria-label="Pokémon anterior"
             style={{ color: textoSobreFondo }}
           >
@@ -132,7 +137,7 @@ export default async function DetallePokemon({
 
         {haySiguiente ? (
           <Link
-            href={`/pokemon/${idNumero + 1}`}
+            href={`/pokemon/${idNumero + 1}${orden ? `?orden=${orden}` : ""}`}
             aria-label="Pokémon siguiente"
             style={{ color: textoSobreFondo }}
           >
