@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,7 +24,7 @@ function normalizar(texto: string) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-export default function PokemonList({ pokemones }: { pokemones: Pokemon[] }) {
+function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orden = searchParams.get("orden") || "numero";
@@ -184,5 +184,13 @@ export default function PokemonList({ pokemones }: { pokemones: Pokemon[] }) {
         </ul>
       )}
     </div>
+  );
+}
+
+export default function PokemonList({ pokemones }: { pokemones: Pokemon[] }) {
+  return (
+    <Suspense fallback={<p>Cargando...</p>}>
+      <ListaConOrden pokemones={pokemones} />
+    </Suspense>
   );
 }
