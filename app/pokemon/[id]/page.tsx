@@ -1,30 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { coloresPorTipo, colorDeTexto } from "../../coloresPorTipo";
-
-type Pokemon = {
-  id: number;
-  name: string;
-  height: number;
-  weight: number;
-  sprites: {
-    front_default: string | null;
-  };
-  types: {
-    type: { name: string };
-  }[];
-  stats: {
-    base_stat: number;
-    stat: { name: string };
-  }[];
-};
-
-type PokemonSpecies = {
-  flavor_text_entries: {
-    flavor_text: string;
-    language: { name: string };
-  }[];
-};
+import { getPokemonDetail, getPokemonSpecies } from "../../lib/pokeapi";
 
 const TOTAL_POKEMON = 50;
 const STAT_MAXIMO = 255;
@@ -46,31 +23,14 @@ export default async function DetallePokemon({
 
   const hrefVolver = orden ? `/?orden=${orden}` : "/";
 
-  let res: Response;
-  let resSpecies: Response;
-  try {
-    [res, resSpecies] = await Promise.all([
-      fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
-        next: { revalidate: 3600 },
-      }),
-      fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`, {
-        next: { revalidate: 3600 },
-      }),
-    ]);
-  } catch (error) {
-    throw new Error("No se pudo conectar con la PokéAPI. Revisá tu conexión.");
-  }
+  const [pokemon, species] = await Promise.all([
+    getPokemonDetail(id),
+    getPokemonSpecies(id),
+  ]);
 
-  if (res.status === 404) {
+  if (!pokemon) {
     return <p>No existe ese Pokémon.</p>;
   }
-
-  if (!res.ok || !resSpecies.ok) {
-    throw new Error(`La PokéAPI respondió con un error.`);
-  }
-
-  const pokemon: Pokemon = await res.json();
-  const species: PokemonSpecies = await resSpecies.json();
 
   const descripcionEntry = species.flavor_text_entries.find(
     (entry) => entry.language.name === "es"

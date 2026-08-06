@@ -1,56 +1,20 @@
-import Image from "next/image";
 import PokemonList from "./PokemonList";
+import { getPokemonList, getPokemonDetail, type Pokemon } from "./lib/pokeapi";
 
-type PokemonListItem = {
-  name: string;
-  url: string;
-};
-
-type Pokemon = {
-  id: number;
-  name: string;
-  sprites: {
-    front_default: string | null;
-  };
-  types: {
-    type: { name: string };
-  }[];
-};
-
-async function getPokemon(): Promise<Pokemon[]> {
-  let res: Response;
-  try {
-    res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=50", {
-      next: { revalidate: 3600 },
-    });
-  } catch (error) {
-    throw new Error("No se pudo conectar con la PokéAPI. Revisá tu conexión.");
-  }
-
-  if (!res.ok) {
-    throw new Error(`Error al obtener la lista de Pokémon: ${res.status}`);
-  }
-
-  const data: { results: PokemonListItem[] } = await res.json();
-
-  return Promise.all(
-    data.results.map(async (item) => {
-      let detalle: Response;
-      try {
-        detalle = await fetch(item.url, { next: { revalidate: 3600 } });
-      } catch (error) {
-        throw new Error(`No se pudo conectar para obtener ${item.name}.`);
-      }
-      if (!detalle.ok) {
-        throw new Error(`Error al obtener ${item.name}: ${detalle.status}`);
-      }
-      return detalle.json();
-    })
-  );
-}
+const LIMITE = 50;
 
 export default async function Home() {
-  const pokemones = await getPokemon();
+  const lista = await getPokemonList(LIMITE);
+
+  const pokemones = await Promise.all(
+    lista.results.map(async (item) => {
+      const detalle = await getPokemonDetail(item.name);
+      if (!detalle) {
+        throw new Error(`No se encontró el Pokémon ${item.name}.`);
+      }
+      return detalle;
+    })
+  );
 
   return (
     <div>
