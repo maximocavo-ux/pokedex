@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { coloresPorTipo } from "../../coloresPorTipo";
 
 type Pokemon = {
   id: number;
@@ -7,6 +8,9 @@ type Pokemon = {
   sprites: {
     front_default: string | null;
   };
+  types: {
+    type: { name: string };
+  }[];
   stats: {
     base_stat: number;
     stat: { name: string };
@@ -45,8 +49,24 @@ export default async function DetallePokemon({
   const hayAnterior = idNumero > 1;
   const haySiguiente = idNumero < TOTAL_POKEMON;
 
+  const colores = pokemon.types.map(
+    (t) => coloresPorTipo[t.type.name] || "#eee"
+  );
+
+  const fondo =
+    colores.length === 2
+      ? `linear-gradient(135deg, ${colores[0]}, ${colores[1]})`
+      : colores[0];
+
   return (
-    <div>
+    <div
+      style={{
+        background: fondo,
+        transition: "background 0.4s ease",
+        padding: "24px",
+        minHeight: "100vh",
+      }}
+    >
       <Link href="/">← Volver</Link>
       <h1>{pokemon.name}</h1>
       <p>Número: {pokemon.id}</p>
