@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { coloresPorTipo } from "../../coloresPorTipo";
+import { coloresPorTipo, colorDeTexto } from "../../coloresPorTipo";
 
 type Pokemon = {
   id: number;
@@ -26,7 +26,7 @@ type PokemonSpecies = {
   }[];
 };
 
-const TOTAL_POKEMON = 20;
+const TOTAL_POKEMON = 50;
 const STAT_MAXIMO = 255;
 
 function limpiarDescripcion(texto: string) {
@@ -90,6 +90,8 @@ export default async function DetallePokemon({
       ? `linear-gradient(135deg, ${colores[0]}, ${colores[1]})`
       : colores[0];
 
+  const textoSobreFondo = colorDeTexto(colores[0]);
+
   return (
     <div
       style={{
@@ -97,19 +99,26 @@ export default async function DetallePokemon({
         transition: "background 0.4s ease",
         padding: "24px",
         minHeight: "100vh",
+        color: textoSobreFondo,
       }}
     >
-      <Link href="/">← Volver</Link>
+      <Link href="/" style={{ color: textoSobreFondo }}>
+        ← Volver
+      </Link>
       <h1>{pokemon.name}</h1>
       <p>Número: {pokemon.id}</p>
 
       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
         {hayAnterior ? (
-          <Link href={`/pokemon/${idNumero - 1}`} aria-label="Pokémon anterior">
+          <Link
+            href={`/pokemon/${idNumero - 1}`}
+            aria-label="Pokémon anterior"
+            style={{ color: textoSobreFondo }}
+          >
             ← Anterior
           </Link>
         ) : (
-          <span style={{ color: "#ccc" }}>← Anterior</span>
+          <span style={{ opacity: 0.4 }}>← Anterior</span>
         )}
 
         {pokemon.sprites.front_default && (
@@ -122,11 +131,15 @@ export default async function DetallePokemon({
         )}
 
         {haySiguiente ? (
-          <Link href={`/pokemon/${idNumero + 1}`} aria-label="Pokémon siguiente">
+          <Link
+            href={`/pokemon/${idNumero + 1}`}
+            aria-label="Pokémon siguiente"
+            style={{ color: textoSobreFondo }}
+          >
             Siguiente →
           </Link>
         ) : (
-          <span style={{ color: "#ccc" }}>Siguiente →</span>
+          <span style={{ opacity: 0.4 }}>Siguiente →</span>
         )}
       </div>
 
@@ -135,6 +148,7 @@ export default async function DetallePokemon({
           backgroundColor: "white",
           borderRadius: "8px",
           padding: "20px",
+          color: "#000000",
         }}
       >
         <p>{descripcion}</p>

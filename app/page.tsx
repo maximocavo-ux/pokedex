@@ -20,7 +20,7 @@ type Pokemon = {
 async function getPokemon(): Promise<Pokemon[]> {
   let res: Response;
   try {
-    res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=20", {
+    res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=50", {
       next: { revalidate: 3600 },
     });
   } catch (error) {
