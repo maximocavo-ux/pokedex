@@ -52,6 +52,15 @@ app/
 - `fetch` no lanza error en un 404, hay que chequear `res.status` explícitamente.
 - Antes de un merge, esperar el check de Vercel en verde, no alcanza con que ande en `npm run dev`.
 
+## Estrategia de estilos
+
+Decisión completa en `docs/adr/001-estilos.md`. Resumen:
+
+- **Tailwind CSS** es la estrategia elegida, con **CSS variables** para los tokens de diseño (colores, espaciados) cuando se formalice el design system (SETUP-4).
+- Migración **gradual**: no se reescribe toda la UI de una vez. Los estilos inline (`style={{...}}`) existentes conviven con Tailwind mientras se migra componente por componente.
+- Para código **nuevo**, preferir clases de Tailwind sobre `style={{...}}` inline desde ahora.
+- Nomenclatura de clases: usar las utilidades estándar de Tailwind (`bg-`, `text-`, `p-`, `gap-`, etc.), sin crear clases custom salvo que sea estrictamente necesario (como `skeleton-shimmer` en `globals.css`, que requiere `@keyframes` y no se puede expresar con utilidades).
+
 ## Particularidades de la PokéAPI
 
 - `/pokemon?limit=&offset=` devuelve solo `{name, url}`, no el detalle completo.
