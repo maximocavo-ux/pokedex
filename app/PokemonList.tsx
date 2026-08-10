@@ -290,13 +290,7 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
           <button
             onClick={() => setBusqueda("")}
             aria-label="Limpiar búsqueda"
-            style={{
-              border: "none",
-              background: "none",
-              cursor: "pointer",
-              fontSize: "16px",
-              padding: 0,
-            }}
+            className="border-none bg-transparent cursor-pointer text-base p-0"
           >
             ×
           </button>
