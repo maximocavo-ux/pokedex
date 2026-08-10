@@ -182,7 +182,9 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
   const [busqueda, setBusqueda] = useState("");
   const [busquedaDebounced, setBusquedaDebounced] = useState("");
   const [tiposSeleccionados, setTiposSeleccionados] = useState<string[]>([]);
-  const [nombresPorTipo, setNombresPorTipo] = useState<Record<string, string[]>>({});
+  const [nombresPorTipo, setNombresPorTipo] = useState<
+    Record<string, string[]>
+  >({});
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
