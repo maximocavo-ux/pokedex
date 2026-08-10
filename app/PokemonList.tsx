@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import type { Pokemon } from "./lib/pokeapi";
+import { getPokemonPorTipo } from "./lib/pokeapi";
 import { coloresPorTipo } from "./coloresPorTipo";
 import {
   CARD_ANCHO,
@@ -13,6 +14,8 @@ import {
   NUMERO_ALTO,
   NOMBRE_ALTO,
 } from "./pokemonCardDimensions";
+
+const TIPOS_DISPONIBLES = Object.keys(coloresPorTipo);
 
 function normalizar(texto: string) {
   return texto
@@ -178,6 +181,8 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
 
   const [busqueda, setBusqueda] = useState("");
   const [busquedaDebounced, setBusquedaDebounced] = useState("");
+  const [tiposSeleccionados, setTiposSeleccionados] = useState<string[]>([]);
+  const [nombresPorTipo, setNombresPorTipo] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -187,13 +192,45 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
     return () => clearTimeout(timeoutId);
   }, [busqueda]);
 
+  useEffect(() => {
+    tiposSeleccionados.forEach((tipo) => {
+      if (!nombresPorTipo[tipo]) {
+        getPokemonPorTipo(tipo).then((nombres) => {
+          setNombresPorTipo((prev) => ({ ...prev, [tipo]: nombres }));
+        });
+      }
+    });
+  }, [tiposSeleccionados, nombresPorTipo]);
+
   function cambiarOrden(nuevoOrden: string) {
     router.push(`?orden=${nuevoOrden}`);
   }
 
-  const filtrados = pokemones.filter((pokemon) =>
-    normalizar(pokemon.name).includes(normalizar(busquedaDebounced))
-  );
+  function alternarTipo(tipo: string) {
+    setTiposSeleccionados((prev) =>
+      prev.includes(tipo) ? prev.filter((t) => t !== tipo) : [...prev, tipo]
+    );
+  }
+
+  function limpiarFiltros() {
+    setTiposSeleccionados([]);
+  }
+
+  const filtrados = pokemones.filter((pokemon) => {
+    const coincideBusqueda = normalizar(pokemon.name).includes(
+      normalizar(busquedaDebounced)
+    );
+
+    if (tiposSeleccionados.length === 0) {
+      return coincideBusqueda;
+    }
+
+    const coincideTipo = tiposSeleccionados.every((tipo) =>
+      nombresPorTipo[tipo]?.includes(pokemon.name)
+    );
+
+    return coincideBusqueda && coincideTipo;
+  });
 
   const ordenados = [...filtrados].sort((a, b) => {
     if (orden === "nombre") {
@@ -293,8 +330,54 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
         </button>
       </div>
 
+      <div style={{ margin: "12px 0" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+          {TIPOS_DISPONIBLES.map((tipo) => {
+            const seleccionado = tiposSeleccionados.includes(tipo);
+            return (
+              <button
+                key={tipo}
+                onClick={() => alternarTipo(tipo)}
+                aria-pressed={seleccionado}
+                style={{
+                  fontSize: "10px",
+                  padding: "2px 8px",
+                  borderRadius: "10px",
+                  border: seleccionado
+                    ? `2px solid ${coloresPorTipo[tipo]}`
+                    : "1px solid #ccc",
+                  backgroundColor: seleccionado
+                    ? coloresPorTipo[tipo]
+                    : "white",
+                  color: seleccionado ? "white" : "#333",
+                  cursor: "pointer",
+                }}
+              >
+                {tipo}
+              </button>
+            );
+          })}
+        </div>
+        {tiposSeleccionados.length > 0 && (
+          <button
+            onClick={limpiarFiltros}
+            style={{
+              marginTop: "8px",
+              fontSize: "12px",
+              background: "none",
+              border: "none",
+              color: "#666",
+              cursor: "pointer",
+              textDecoration: "underline",
+            }}
+          >
+            Limpiar filtros
+          </button>
+        )}
+      </div>
+
       {ordenados.length === 0 ? (
-        <p>No se encontró ningún Pokémon con ese nombre.</p>
+        <p>No se encontró ningún Pokémon con esos criterios.</p>
       ) : (
         <div
           style={{

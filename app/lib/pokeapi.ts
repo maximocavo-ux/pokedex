@@ -95,3 +95,21 @@ export async function getPokemonSpecies(
 
   return res.json();
 }
+export type PokemonPorTipo = {
+  pokemon: {
+    pokemon: NamedAPIResource;
+  }[];
+};
+
+export async function getPokemonPorTipo(
+  tipo: string
+): Promise<string[]> {
+  const res = await fetchConTimeout(`${BASE_URL}/type/${tipo}`);
+
+  if (!res.ok) {
+    throw new Error(`Error al obtener el tipo ${tipo}: ${res.status}`);
+  }
+
+  const data: PokemonPorTipo = await res.json();
+  return data.pokemon.map((p) => p.pokemon.name);
+}
