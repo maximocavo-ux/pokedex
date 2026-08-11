@@ -1,25 +1,20 @@
 import PokemonList from "./PokemonList";
-import { getPokemonList, getPokemonDetail, type Pokemon } from "./lib/pokeapi";
+import { getPokemonList, idDesdeUrl } from "./lib/pokeapi";
 
-const LIMITE = 50;
+const TOTAL_POKEMON = 1302;
 
 export default async function Home() {
-  const lista = await getPokemonList(LIMITE);
+  const lista = await getPokemonList(TOTAL_POKEMON);
 
-  const pokemones = await Promise.all(
-    lista.results.map(async (item) => {
-      const detalle = await getPokemonDetail(item.name);
-      if (!detalle) {
-        throw new Error(`No se encontró el Pokémon ${item.name}.`);
-      }
-      return detalle;
-    })
-  );
+  const pokemonesLivianos = lista.results.map((item) => ({
+    name: item.name,
+    id: idDesdeUrl(item.url),
+  }));
 
   return (
     <div>
       <h1>Pokédex</h1>
-      <PokemonList pokemones={pokemones} />
+      <PokemonList pokemones={pokemonesLivianos} />
     </div>
   );
 }
