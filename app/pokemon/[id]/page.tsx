@@ -1,3 +1,4 @@
+import TipoChip from "../../TipoChip";
 import Image from "next/image";
 import Link from "next/link";
 import { coloresPorTipo, colorDeTexto } from "../../coloresPorTipo";
@@ -7,7 +8,10 @@ const TOTAL_POKEMON = 50;
 const STAT_MAXIMO = 255;
 
 function limpiarDescripcion(texto: string) {
-  return texto.replace(/[\n\f\r\u00ad]/g, " ").replace(/\s+/g, " ").trim();
+  return texto
+    .replace(/[\n\f\r\u00ad]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export default async function DetallePokemon({
@@ -32,11 +36,9 @@ export default async function DetallePokemon({
     return <p>No existe ese Pokémon.</p>;
   }
 
-  const descripcionEntry = species.flavor_text_entries.find(
-    (entry) => entry.language.name === "es"
-  ) || species.flavor_text_entries.find(
-    (entry) => entry.language.name === "en"
-  );
+  const descripcionEntry =
+    species.flavor_text_entries.find((entry) => entry.language.name === "es") ||
+    species.flavor_text_entries.find((entry) => entry.language.name === "en");
   const descripcion = descripcionEntry
     ? limpiarDescripcion(descripcionEntry.flavor_text)
     : "Sin descripción disponible.";
@@ -71,6 +73,11 @@ export default async function DetallePokemon({
         ← Volver
       </Link>
       <h1>{pokemon.name}</h1>
+      <div style={{ display: "flex", gap: "4px", margin: "4px 0" }}>
+        {pokemon.types.map((t) => (
+          <TipoChip key={t.type.name} tipo={t.type.name} />
+        ))}
+      </div>
       <p>Número: {pokemon.id}</p>
 
       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -134,7 +141,12 @@ export default async function DetallePokemon({
           {pokemon.stats.map((s) => (
             <li
               key={s.stat.name}
-              style={{ display: "flex", alignItems: "center", gap: "8px", margin: "4px 0" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                margin: "4px 0",
+              }}
             >
               <span style={{ width: "60px", fontSize: "12px" }}>
                 {s.stat.name}
