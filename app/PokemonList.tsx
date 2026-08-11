@@ -220,6 +220,10 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
     });
   }, [tiposSeleccionados, nombresPorTipo]);
 
+  useEffect(() => {
+    contenedorRef.current?.scrollTo({ top: 0 });
+  }, [orden, busquedaDebounced, tiposSeleccionados]);
+
   function cambiarOrden(nuevoOrden: string) {
     router.push(`?orden=${nuevoOrden}`);
   }
