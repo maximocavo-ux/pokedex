@@ -8,6 +8,7 @@ import {
   getPokemonSpecies,
   TOTAL_POKEMON,
 } from "../../lib/pokeapi";
+import { nombresPorStat } from "../../nombresPorStat";
 
 const STAT_MAXIMO = 255;
 
@@ -171,7 +172,7 @@ export default async function DetallePokemon({
               }}
             >
               <span style={{ width: "60px", fontSize: "12px" }}>
-                {s.stat.name}
+                {nombresPorStat[s.stat.name] || s.stat.name}
               </span>
               <div
                 style={{
