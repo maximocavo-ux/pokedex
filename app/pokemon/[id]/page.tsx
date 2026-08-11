@@ -9,6 +9,7 @@ import {
   TOTAL_POKEMON,
 } from "../../lib/pokeapi";
 import { nombresPorStat } from "../../nombresPorStat";
+import { capitalizar } from "../../capitalizar";
 
 const STAT_MAXIMO = 255;
 
@@ -80,10 +81,32 @@ export default async function DetallePokemon({
     >
       <PokeballWatermark />
 
-      <Link href={hrefVolver} style={{ color: textoSobreFondo }}>
-        ← Volver
-      </Link>
-      <h1>{pokemon.name}</h1>
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <Link
+          href={hrefVolver}
+          aria-label="Volver a la lista"
+          style={{
+            color: textoSobreFondo,
+            display: "inline-flex",
+            textDecoration: "none",
+          }}
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
+        </Link>
+        <h1 style={{ margin: 0 }}>{capitalizar(pokemon.name)}</h1>
+      </div>
       <div style={{ display: "flex", gap: "4px", margin: "4px 0" }}>
         {pokemon.types.map((t) => (
           <TipoChip key={t.type.name} tipo={t.type.name} />
