@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { coloresPorTipo, colorDeTexto } from "../../coloresPorTipo";
 import { getPokemonDetail, getPokemonSpecies } from "../../lib/pokeapi";
+import PokeballWatermark from "../../PokeballWatermark";
 
 const TOTAL_POKEMON = 50;
 const STAT_MAXIMO = 255;
@@ -69,8 +70,12 @@ export default async function DetallePokemon({
         padding: "24px",
         minHeight: "100vh",
         color: textoSobreFondo,
+        position: "relative",
+        overflow: "hidden",
       }}
     >
+      <PokeballWatermark />
+
       <Link href={hrefVolver} style={{ color: textoSobreFondo }}>
         ← Volver
       </Link>
