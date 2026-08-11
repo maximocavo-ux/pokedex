@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import Link from "next/link";
 import Image from "next/image";
-import type { Pokemon } from "./lib/pokeapi";
-import { getPokemonPorTipo } from "./lib/pokeapi";
+import type { PokemonLiviano, Pokemon } from "./lib/pokeapi";
+import { getPokemonDetail, getPokemonPorTipo } from "./lib/pokeapi";
 import { coloresPorTipo } from "./coloresPorTipo";
 import {
   CARD_ANCHO,
@@ -16,90 +17,14 @@ import {
 } from "./pokemonCardDimensions";
 
 const TIPOS_DISPONIBLES = Object.keys(coloresPorTipo);
+const COLUMNAS = 3;
+const GAP = 8;
 
 function normalizar(texto: string) {
   return texto
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
-}
-
-function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
-  const colorFondo = coloresPorTipo[pokemon.types[0]?.type.name] || "#eee";
-
-  return (
-    <Link
-      href={`/pokemon/${pokemon.id}`}
-      style={{ textDecoration: "none", color: "inherit" }}
-    >
-      <div
-        style={{
-          width: CARD_ANCHO,
-          height: CARD_ALTO,
-          position: "relative",
-          borderRadius: "8px",
-          boxShadow: "0 1px 3px 1px rgba(0,0,0,0.20)",
-          backgroundColor: "white",
-        }}
-      >
-        <p
-          style={{
-            position: "absolute",
-            top: 4,
-            left: 8,
-            right: 8,
-            height: NUMERO_ALTO,
-            margin: 0,
-            fontSize: "8px",
-            color: "#999",
-          }}
-        >
-          #{pokemon.id}
-        </p>
-
-        {pokemon.sprites.front_default && (
-          <div
-            style={{
-              position: "absolute",
-              top: "18px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: SPRITE_TAMANIO,
-              height: SPRITE_TAMANIO,
-            }}
-          >
-            <Image
-              src={pokemon.sprites.front_default}
-              alt={pokemon.name}
-              fill
-              sizes="72px"
-              style={{ objectFit: "contain" }}
-            />
-          </div>
-        )}
-
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: NOMBRE_ALTO,
-            backgroundColor: `${colorFondo}33`,
-            borderRadius: "0 0 8px 8px",
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            paddingBottom: "4px",
-          }}
-        >
-          <span style={{ fontSize: "10px", textAlign: "center" }}>
-            {pokemon.name}
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
 }
 
 export function PokemonCardSkeleton() {
@@ -130,7 +55,6 @@ export function PokemonCardSkeleton() {
         }}
         className="skeleton-shimmer"
       />
-
       <div
         style={{
           position: "absolute",
@@ -144,7 +68,6 @@ export function PokemonCardSkeleton() {
         }}
         className="skeleton-shimmer"
       />
-
       <div
         style={{
           position: "absolute",
@@ -174,7 +97,99 @@ export function PokemonCardSkeleton() {
   );
 }
 
-function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
+function PokemonCard({ id, name }: { id: number; name: string }) {
+  const [detalle, setDetalle] = useState<Pokemon | null>(null);
+
+  useEffect(() => {
+    let cancelado = false;
+    getPokemonDetail(id).then((data) => {
+      if (!cancelado) setDetalle(data);
+    });
+    return () => {
+      cancelado = true;
+    };
+  }, [id]);
+
+  if (!detalle) {
+    return <PokemonCardSkeleton />;
+  }
+
+  const colorFondo = coloresPorTipo[detalle.types[0]?.type.name] || "#eee";
+
+  return (
+    <Link
+      href={`/pokemon/${detalle.id}`}
+      style={{ textDecoration: "none", color: "inherit" }}
+    >
+      <div
+        style={{
+          width: CARD_ANCHO,
+          height: CARD_ALTO,
+          position: "relative",
+          borderRadius: "8px",
+          boxShadow: "0 1px 3px 1px rgba(0,0,0,0.20)",
+          backgroundColor: "white",
+        }}
+      >
+        <p
+          style={{
+            position: "absolute",
+            top: 4,
+            left: 8,
+            right: 8,
+            height: NUMERO_ALTO,
+            margin: 0,
+            fontSize: "8px",
+            color: "#999",
+          }}
+        >
+          #{detalle.id}
+        </p>
+
+        {detalle.sprites.front_default && (
+          <div
+            style={{
+              position: "absolute",
+              top: "18px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: SPRITE_TAMANIO,
+              height: SPRITE_TAMANIO,
+            }}
+          >
+            <Image
+              src={detalle.sprites.front_default}
+              alt={name}
+              fill
+              sizes="72px"
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        )}
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: NOMBRE_ALTO,
+            backgroundColor: `${colorFondo}33`,
+            borderRadius: "0 0 8px 8px",
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            paddingBottom: "4px",
+          }}
+        >
+          <span style={{ fontSize: "10px", textAlign: "center" }}>{name}</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orden = searchParams.get("orden") || "numero";
@@ -186,11 +201,12 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
     Record<string, string[]>
   >({});
 
+  const contenedorRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setBusquedaDebounced(busqueda);
     }, 300);
-
     return () => clearTimeout(timeoutId);
   }, [busqueda]);
 
@@ -241,6 +257,15 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
     return a.id - b.id;
   });
 
+  const filas = Math.ceil(ordenados.length / COLUMNAS);
+
+  const virtualizer = useVirtualizer({
+    count: filas,
+    getScrollElement: () => contenedorRef.current,
+    estimateSize: () => CARD_ALTO + GAP,
+    overscan: 3,
+  });
+
   return (
     <div>
       <div
@@ -268,7 +293,6 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
           <circle cx="11" cy="11" r="7" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
-
         <label htmlFor="busqueda-pokemon" style={{ display: "none" }}>
           Buscar Pokémon por nombre
         </label>
@@ -278,14 +302,8 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
           placeholder="Buscar Pokémon..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          style={{
-            border: "none",
-            outline: "none",
-            flex: 1,
-            fontSize: "14px",
-          }}
+          style={{ border: "none", outline: "none", flex: 1, fontSize: "14px" }}
         />
-
         {busqueda && (
           <button
             onClick={() => setBusqueda("")}
@@ -376,23 +394,63 @@ function ListaConOrden({ pokemones }: { pokemones: Pokemon[] }) {
         <p>No se encontró ningún Pokémon con esos criterios.</p>
       ) : (
         <div
+          ref={contenedorRef}
           style={{
-            display: "grid",
-            gridTemplateColumns: `repeat(3, ${CARD_ANCHO}px)`,
-            gap: "8px",
-            padding: "12px 0",
+            height: "640px",
+            overflow: "auto",
+            position: "relative",
           }}
         >
-          {ordenados.map((pokemon) => (
-            <PokemonCard key={pokemon.id} pokemon={pokemon} />
-          ))}
+          <div
+            style={{
+              height: `${virtualizer.getTotalSize()}px`,
+              position: "relative",
+              width: "100%",
+            }}
+          >
+            {virtualizer.getVirtualItems().map((filaVirtual) => {
+              const inicio = filaVirtual.index * COLUMNAS;
+              const pokemonesDeFila = ordenados.slice(
+                inicio,
+                inicio + COLUMNAS
+              );
+
+              return (
+                <div
+                  key={filaVirtual.key}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: `${filaVirtual.size}px`,
+                    transform: `translateY(${filaVirtual.start}px)`,
+                    display: "flex",
+                    gap: `${GAP}px`,
+                  }}
+                >
+                  {pokemonesDeFila.map((pokemon) => (
+                    <PokemonCard
+                      key={pokemon.id}
+                      id={pokemon.id}
+                      name={pokemon.name}
+                    />
+                  ))}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
   );
 }
 
-export default function PokemonList({ pokemones }: { pokemones: Pokemon[] }) {
+export default function PokemonList({
+  pokemones,
+}: {
+  pokemones: PokemonLiviano[];
+}) {
   return (
     <Suspense fallback={<p>Cargando...</p>}>
       <ListaConOrden pokemones={pokemones} />

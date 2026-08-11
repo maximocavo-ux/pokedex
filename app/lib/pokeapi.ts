@@ -29,6 +29,11 @@ export type Pokemon = {
   }[];
 };
 
+export type PokemonLiviano = {
+  name: string;
+  id: number;
+};
+
 export type PokemonSpecies = {
   flavor_text_entries: {
     flavor_text: string;
@@ -86,8 +91,12 @@ export async function getPokemonDetail(
 
 export async function getPokemonSpecies(
   idOrName: string | number
-): Promise<PokemonSpecies> {
+): Promise<PokemonSpecies | null> {
   const res = await fetchConTimeout(`${BASE_URL}/pokemon-species/${idOrName}`);
+
+  if (res.status === 404) {
+    return null;
+  }
 
   if (!res.ok) {
     throw new Error(`Error al obtener la especie ${idOrName}: ${res.status}`);
@@ -101,9 +110,7 @@ export type PokemonPorTipo = {
   }[];
 };
 
-export async function getPokemonPorTipo(
-  tipo: string
-): Promise<string[]> {
+export async function getPokemonPorTipo(tipo: string): Promise<string[]> {
   const res = await fetchConTimeout(`${BASE_URL}/type/${tipo}`);
 
   if (!res.ok) {
@@ -112,4 +119,9 @@ export async function getPokemonPorTipo(
 
   const data: PokemonPorTipo = await res.json();
   return data.pokemon.map((p) => p.pokemon.name);
+}
+
+export function idDesdeUrl(url: string): number {
+  const match = url.match(/\/pokemon\/(\d+)\//);
+  return match ? Number(match[1]) : 0;
 }

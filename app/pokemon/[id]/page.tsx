@@ -37,8 +37,10 @@ export default async function DetallePokemon({
   }
 
   const descripcionEntry =
-    species.flavor_text_entries.find((entry) => entry.language.name === "es") ||
-    species.flavor_text_entries.find((entry) => entry.language.name === "en");
+    species?.flavor_text_entries.find(
+      (entry) => entry.language.name === "es"
+    ) ||
+    species?.flavor_text_entries.find((entry) => entry.language.name === "en");
   const descripcion = descripcionEntry
     ? limpiarDescripcion(descripcionEntry.flavor_text)
     : "Sin descripción disponible.";
