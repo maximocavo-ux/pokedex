@@ -15,6 +15,7 @@ import {
   NUMERO_ALTO,
   NOMBRE_ALTO,
 } from "./pokemonCardDimensions";
+import { capitalizar } from "./capitalizar";
 
 const TIPOS_DISPONIBLES = Object.keys(coloresPorTipo);
 const COLUMNAS = 3;
@@ -182,7 +183,9 @@ function PokemonCard({ id, name }: { id: number; name: string }) {
             paddingBottom: "4px",
           }}
         >
-          <span style={{ fontSize: "10px", textAlign: "center" }}>{name}</span>
+          <span style={{ fontSize: "10px", textAlign: "center" }}>
+            {capitalizar(name)}
+          </span>
         </div>
       </div>
     </Link>
