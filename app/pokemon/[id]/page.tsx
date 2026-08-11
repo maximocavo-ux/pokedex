@@ -135,14 +135,26 @@ export default async function DetallePokemon({
       >
         <p>{descripcion}</p>
 
-        <div style={{ display: "flex", gap: "24px", margin: "16px 0" }}>
-          <div>
-            <p style={{ fontSize: "12px", color: "#999" }}>Peso</p>
-            <p>{pesoKg} kg</p>
+        <div style={{ display: "flex", gap: "16px", margin: "16px 0" }}>
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <p style={{ fontSize: "12px" }}>{pesoKg} kg</p>
+            <p style={{ fontSize: "8px", color: "#999" }}>Peso</p>
           </div>
-          <div>
-            <p style={{ fontSize: "12px", color: "#999" }}>Altura</p>
-            <p>{alturaMetros} m</p>
+          <div style={{ width: "1px", backgroundColor: "#eee" }} />
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <p style={{ fontSize: "12px" }}>{alturaMetros} m</p>
+            <p style={{ fontSize: "8px", color: "#999" }}>Altura</p>
+          </div>
+          <div style={{ width: "1px", backgroundColor: "#eee" }} />
+          <div style={{ flex: 1, textAlign: "center" }}>
+            {pokemon.abilities.map((a) => (
+              <p key={a.ability.name} style={{ fontSize: "12px", margin: 0 }}>
+                {a.ability.name}
+              </p>
+            ))}
+            <p style={{ fontSize: "8px", color: "#999", marginTop: "4px" }}>
+              Habilidades
+            </p>
           </div>
         </div>
 

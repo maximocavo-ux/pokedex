@@ -29,6 +29,10 @@ export type Pokemon = {
     base_stat: number;
     stat: { name: string };
   }[];
+  abilities: {
+    ability: { name: string };
+    is_hidden: boolean;
+  }[];
 };
 
 export type PokemonLiviano = {
