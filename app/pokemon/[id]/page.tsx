@@ -2,10 +2,13 @@ import TipoChip from "../../TipoChip";
 import Image from "next/image";
 import Link from "next/link";
 import { coloresPorTipo, colorDeTexto } from "../../coloresPorTipo";
-import { getPokemonDetail, getPokemonSpecies } from "../../lib/pokeapi";
 import PokeballWatermark from "../../PokeballWatermark";
+import {
+  getPokemonDetail,
+  getPokemonSpecies,
+  TOTAL_POKEMON,
+} from "../../lib/pokeapi";
 
-const TOTAL_POKEMON = 50;
 const STAT_MAXIMO = 255;
 
 function limpiarDescripcion(texto: string) {
