@@ -26,6 +26,12 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --color-primary: #ff4d6d;
+    --color-dark: #efefef;
+    --color-medium: #b0b0b0;
+    --color-light: #3a3a3a;
+    --color-surface: #1a1a1a;
+    --color-white: #212121;
   }
 }
 
