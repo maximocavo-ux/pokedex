@@ -1,7 +1,5 @@
 import PokemonList from "./PokemonList";
-import { getPokemonList, idDesdeUrl } from "./lib/pokeapi";
-
-const TOTAL_POKEMON = 1302;
+import { getPokemonList, idDesdeUrl, TOTAL_POKEMON } from "./lib/pokeapi";
 
 export default async function Home() {
   const lista = await getPokemonList(TOTAL_POKEMON);

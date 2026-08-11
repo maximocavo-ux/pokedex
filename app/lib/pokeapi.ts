@@ -2,6 +2,8 @@ const BASE_URL = "https://pokeapi.co/api/v2";
 const TIMEOUT_MS = 8000;
 const REVALIDATE_SEGUNDOS = 3600;
 
+export const TOTAL_POKEMON = 1302;
+
 export type NamedAPIResource = {
   name: string;
   url: string;
