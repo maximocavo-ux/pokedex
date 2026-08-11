@@ -91,25 +91,36 @@ export default async function DetallePokemon({
       </div>
       <p>Número: {pokemon.id}</p>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "16px",
+        }}
+      >
         {hayAnterior ? (
           <Link
             href={`/pokemon/${idNumero - 1}${orden ? `?orden=${orden}` : ""}`}
             aria-label="Pokémon anterior"
-            style={{ color: textoSobreFondo }}
+            style={{
+              color: textoSobreFondo,
+              fontSize: "24px",
+              textDecoration: "none",
+            }}
           >
-            ← Anterior
+            ‹
           </Link>
         ) : (
-          <span style={{ opacity: 0.4 }}>← Anterior</span>
+          <span style={{ fontSize: "24px", opacity: 0.4 }}>‹</span>
         )}
 
         {pokemon.sprites.front_default && (
           <Image
             src={pokemon.sprites.front_default}
             alt={pokemon.name}
-            width={150}
-            height={150}
+            width={200}
+            height={200}
           />
         )}
 
@@ -117,12 +128,16 @@ export default async function DetallePokemon({
           <Link
             href={`/pokemon/${idNumero + 1}${orden ? `?orden=${orden}` : ""}`}
             aria-label="Pokémon siguiente"
-            style={{ color: textoSobreFondo }}
+            style={{
+              color: textoSobreFondo,
+              fontSize: "24px",
+              textDecoration: "none",
+            }}
           >
-            Siguiente →
+            ›
           </Link>
         ) : (
-          <span style={{ opacity: 0.4 }}>Siguiente →</span>
+          <span style={{ fontSize: "24px", opacity: 0.4 }}>›</span>
         )}
       </div>
 
