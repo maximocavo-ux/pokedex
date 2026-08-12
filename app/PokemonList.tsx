@@ -238,7 +238,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
 
           <div className="relative">
             <button
-              onClick={() => setModalAbierto(true)}
+              onClick={() => setModalAbierto((prev) => !prev)}
               aria-label="Ordenar lista"
               aria-haspopup="dialog"
               className="w-8 h-8 rounded-full border-none bg-white cursor-pointer text-sm"
