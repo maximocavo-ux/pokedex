@@ -16,6 +16,7 @@ import {
   NOMBRE_ALTO,
 } from "./pokemonCardDimensions";
 import { capitalizar } from "./capitalizar";
+import SortByModal from "./SortByModal";
 
 const TIPOS_DISPONIBLES = Object.keys(coloresPorTipo);
 const COLUMNAS = 3;
@@ -203,7 +204,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   const [nombresPorTipo, setNombresPorTipo] = useState<
     Record<string, string[]>
   >({});
-
+  const [modalAbierto, setModalAbierto] = useState(false);
   const contenedorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -322,33 +323,34 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
         )}
       </div>
 
-      <div style={{ display: "flex", gap: "8px", margin: "12px 0" }}>
+      <div style={{ position: "relative", margin: "12px 0" }}>
         <button
-          onClick={() => cambiarOrden("numero")}
+          onClick={() => setModalAbierto(true)}
+          aria-label="Ordenar lista"
+          aria-haspopup="dialog"
           style={{
-            fontWeight: orden === "numero" ? "bold" : "normal",
-            padding: "4px 12px",
-            borderRadius: "999px",
+            width: "32px",
+            height: "32px",
+            borderRadius: "50%",
             border: "1px solid #ccc",
+            backgroundColor: "white",
             cursor: "pointer",
-            background: orden === "numero" ? "#eee" : "white",
+            fontSize: "14px",
           }}
         >
-          Número
+          #
         </button>
-        <button
-          onClick={() => cambiarOrden("nombre")}
-          style={{
-            fontWeight: orden === "nombre" ? "bold" : "normal",
-            padding: "4px 12px",
-            borderRadius: "999px",
-            border: "1px solid #ccc",
-            cursor: "pointer",
-            background: orden === "nombre" ? "#eee" : "white",
-          }}
-        >
-          Nombre
-        </button>
+
+        {modalAbierto && (
+          <SortByModal
+            orden={orden}
+            onCambiarOrden={(nuevoOrden) => {
+              cambiarOrden(nuevoOrden);
+              setModalAbierto(false);
+            }}
+            onCerrar={() => setModalAbierto(false)}
+          />
+        )}
       </div>
 
       <div style={{ margin: "12px 0" }}>
