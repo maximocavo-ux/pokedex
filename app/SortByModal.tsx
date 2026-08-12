@@ -20,8 +20,30 @@ export default function SortByModal({
     function manejarTecla(e: KeyboardEvent) {
       if (e.key === "Escape") {
         onCerrar();
+        return;
+      }
+
+      if (e.key !== "Tab" || !modalRef.current) {
+        return;
+      }
+
+      const elementosFocables = modalRef.current.querySelectorAll<HTMLElement>(
+        "button, [tabindex]:not([tabindex='-1'])"
+      );
+      if (elementosFocables.length === 0) return;
+
+      const primero = elementosFocables[0];
+      const ultimo = elementosFocables[elementosFocables.length - 1];
+
+      if (e.shiftKey && document.activeElement === primero) {
+        e.preventDefault();
+        ultimo.focus();
+      } else if (!e.shiftKey && document.activeElement === ultimo) {
+        e.preventDefault();
+        primero.focus();
       }
     }
+
     document.addEventListener("keydown", manejarTecla);
     return () => document.removeEventListener("keydown", manejarTecla);
   }, [onCerrar]);
