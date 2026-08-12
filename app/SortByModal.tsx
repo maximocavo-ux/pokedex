@@ -59,16 +59,7 @@ export default function SortByModal({
         onClick={() => onCambiarOrden(valor)}
         role="radio"
         aria-checked={seleccionado}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          padding: 0,
-          width: "100%",
-        }}
+        className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 w-full"
       >
         <Image
           src={seleccionado ? "/radio-on.svg" : "/radio-off.svg"}
@@ -76,7 +67,7 @@ export default function SortByModal({
           width={16}
           height={16}
         />
-        <span style={{ fontSize: "10px", color: "#1d1d1d" }}>{etiqueta}</span>
+        <span className="text-[10px] text-[#1d1d1d]">{etiqueta}</span>
       </button>
     );
   }
@@ -88,41 +79,18 @@ export default function SortByModal({
       aria-modal="true"
       aria-label="Ordenar por"
       tabIndex={-1}
+      className="absolute top-10 right-0 w-[113px] rounded-xl p-1 z-10"
       style={{
-        position: "absolute",
-        top: "40px",
-        right: 0,
-        width: "113px",
         backgroundColor: "var(--color-primary)",
-        borderRadius: "12px",
         boxShadow: "var(--elevation-2)",
-        padding: "4px",
-        zIndex: 10,
       }}
     >
-      <div style={{ padding: "16px 20px 8px" }}>
-        <p
-          style={{
-            fontSize: "12px",
-            fontWeight: 700,
-            color: "white",
-            margin: 0,
-          }}
-        >
-          Sort by:
-        </p>
+      <div className="px-5 pt-4 pb-2">
+        <p className="text-xs font-bold text-white m-0">Sort by:</p>
       </div>
       <div
-        style={{
-          position: "relative",
-          backgroundColor: "white",
-          borderRadius: "8px",
-          padding: "16px 20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          boxShadow: "var(--elevation-inner)",
-        }}
+        className="relative bg-white rounded-lg px-5 py-4 flex flex-col gap-4"
+        style={{ boxShadow: "var(--elevation-inner)" }}
       >
         {opcion("numero", "Number")}
         {opcion("nombre", "Name")}
