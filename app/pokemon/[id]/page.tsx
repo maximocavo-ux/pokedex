@@ -172,8 +172,6 @@ export default async function DetallePokemon({
           color: "#000000",
         }}
       >
-        <p>{descripcion}</p>
-
         <div style={{ display: "flex", gap: "16px", margin: "16px 0" }}>
           <div style={{ flex: 1, textAlign: "center" }}>
             <p style={{ fontSize: "12px" }}>{pesoKg} kg</p>
@@ -197,7 +195,19 @@ export default async function DetallePokemon({
           </div>
         </div>
 
-        <h2>Stats</h2>
+        <p>{descripcion}</p>
+
+        <h2
+          style={{
+            fontSize: "16px",
+            fontWeight: 700,
+            textAlign: "center",
+            margin: "16px 0 8px",
+            color: colores[0],
+          }}
+        >
+          Base Stats
+        </h2>
         <ul style={{ listStyle: "none", padding: 0 }}>
           {pokemon.stats.map((s) => (
             <li
