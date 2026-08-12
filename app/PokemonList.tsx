@@ -278,82 +278,123 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
     <div>
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          width: "280px",
-          height: "32px",
-          borderRadius: "16px",
-          border: "1px solid #ccc",
-          padding: "8px 16px 8px 12px",
-          boxSizing: "border-box",
+          backgroundColor: "var(--color-primary)",
+          padding: "12px 12px 16px",
         }}
       >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#888"
-          strokeWidth="2"
-          aria-hidden="true"
-        >
-          <circle cx="11" cy="11" r="7" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        </svg>
-        <label htmlFor="busqueda-pokemon" style={{ display: "none" }}>
-          Buscar Pokémon por nombre
-        </label>
-        <input
-          id="busqueda-pokemon"
-          type="search"
-          placeholder="Buscar Pokémon..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          style={{ border: "none", outline: "none", flex: 1, fontSize: "14px" }}
-        />
-        {busqueda && (
-          <button
-            onClick={() => setBusqueda("")}
-            aria-label="Limpiar búsqueda"
-            className="border-none bg-transparent cursor-pointer text-base p-0"
-          >
-            ×
-          </button>
-        )}
-      </div>
-
-      <div style={{ position: "relative", margin: "12px 0" }}>
-        <button
-          onClick={() => setModalAbierto(true)}
-          aria-label="Ordenar lista"
-          aria-haspopup="dialog"
+        <div
           style={{
-            width: "32px",
-            height: "32px",
-            borderRadius: "50%",
-            border: "1px solid #ccc",
-            backgroundColor: "white",
-            cursor: "pointer",
-            fontSize: "14px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            marginBottom: "16px",
           }}
         >
-          #
-        </button>
-
-        {modalAbierto && (
-          <SortByModal
-            orden={orden}
-            onCambiarOrden={(nuevoOrden) => {
-              cambiarOrden(nuevoOrden);
-              setModalAbierto(false);
+          <Image src="/pokeball.svg" alt="" width={24} height={24} />
+          <h1
+            style={{
+              color: "white",
+              fontSize: "24px",
+              fontWeight: 700,
+              margin: 0,
             }}
-            onCerrar={() => setModalAbierto(false)}
-          />
-        )}
+          >
+            Pokédex
+          </h1>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              width: "280px",
+              height: "32px",
+              borderRadius: "16px",
+              backgroundColor: "white",
+              padding: "8px 16px 8px 12px",
+              boxSizing: "border-box",
+            }}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#888"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <label htmlFor="busqueda-pokemon" style={{ display: "none" }}>
+              Buscar Pokémon por nombre
+            </label>
+            <input
+              id="busqueda-pokemon"
+              type="search"
+              placeholder="Buscar Pokémon..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              style={{
+                border: "none",
+                outline: "none",
+                flex: 1,
+                fontSize: "14px",
+              }}
+            />
+            {busqueda && (
+              <button
+                onClick={() => setBusqueda("")}
+                aria-label="Limpiar búsqueda"
+                className="border-none bg-transparent cursor-pointer text-base p-0"
+              >
+                ×
+              </button>
+            )}
+          </div>
+
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setModalAbierto(true)}
+              aria-label="Ordenar lista"
+              aria-haspopup="dialog"
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+                border: "none",
+                backgroundColor: "white",
+                cursor: "pointer",
+                fontSize: "14px",
+              }}
+            >
+              #
+            </button>
+
+            {modalAbierto && (
+              <SortByModal
+                orden={orden}
+                onCambiarOrden={(nuevoOrden) => {
+                  cambiarOrden(nuevoOrden);
+                  setModalAbierto(false);
+                }}
+                onCerrar={() => setModalAbierto(false)}
+              />
+            )}
+          </div>
+        </div>
       </div>
 
-      <div style={{ margin: "12px 0" }}>
+      <div style={{ margin: "12px" }}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
           {TIPOS_DISPONIBLES.map((tipo) => {
             const seleccionado = tiposSeleccionados.includes(tipo);
@@ -400,7 +441,9 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
       </div>
 
       {ordenados.length === 0 ? (
-        <p>No se encontró ningún Pokémon con esos criterios.</p>
+        <p style={{ margin: "12px" }}>
+          No se encontró ningún Pokémon con esos criterios.
+        </p>
       ) : (
         <div
           ref={contenedorRef}
@@ -408,6 +451,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
             height: "640px",
             overflow: "auto",
             position: "relative",
+            padding: "0 12px",
           }}
         >
           <div

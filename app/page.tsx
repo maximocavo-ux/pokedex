@@ -11,7 +11,6 @@ export default async function Home() {
 
   return (
     <div>
-      <h1>Pokédex</h1>
       <PokemonList pokemones={pokemonesLivianos} />
     </div>
   );
