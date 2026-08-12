@@ -137,14 +137,12 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   }, [busqueda]);
 
   useEffect(() => {
-    tiposSeleccionados.forEach((tipo) => {
-      if (!nombresPorTipo[tipo]) {
-        getPokemonPorTipo(tipo).then((nombres) => {
-          setNombresPorTipo((prev) => ({ ...prev, [tipo]: nombres }));
-        });
-      }
+    TIPOS_DISPONIBLES.forEach((tipo) => {
+      getPokemonPorTipo(tipo).then((nombres) => {
+        setNombresPorTipo((prev) => ({ ...prev, [tipo]: nombres }));
+      });
     });
-  }, [tiposSeleccionados, nombresPorTipo]);
+  }, []);
 
   useEffect(() => {
     contenedorRef.current?.scrollTo({ top: 0 });
