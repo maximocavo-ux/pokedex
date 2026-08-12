@@ -5,14 +5,14 @@ export default function PokeballWatermark() {
     <Image
       src="/pokeball.svg"
       alt=""
-      width={208}
-      height={208}
+      width={380}
+      height={380}
       aria-hidden="true"
       style={{
         position: "absolute",
-        top: "-40px",
-        right: "-40px",
-        opacity: 0.12,
+        top: "-90px",
+        right: "-60px",
+        opacity: 0.1,
         pointerEvents: "none",
       }}
     />
