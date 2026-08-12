@@ -69,27 +69,17 @@ export default async function DetallePokemon({
 
   return (
     <div
-      style={{
-        background: fondo,
-        transition: "background 0.4s ease",
-        padding: "24px",
-        minHeight: "100vh",
-        color: textoSobreFondo,
-        position: "relative",
-        overflow: "hidden",
-      }}
+      className="p-6 min-h-screen relative overflow-hidden transition-[background] duration-500 ease-in-out"
+      style={{ background: fondo, color: textoSobreFondo }}
     >
       <PokeballWatermark />
 
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      <div className="flex items-center gap-3">
         <Link
           href={hrefVolver}
           aria-label="Volver a la lista"
-          style={{
-            color: textoSobreFondo,
-            display: "inline-flex",
-            textDecoration: "none",
-          }}
+          className="inline-flex no-underline"
+          style={{ color: textoSobreFondo }}
         >
           <svg
             width="32"
@@ -105,37 +95,27 @@ export default async function DetallePokemon({
             <path d="M12 19l-7-7 7-7" />
           </svg>
         </Link>
-        <h1 style={{ margin: 0 }}>{capitalizar(pokemon.name)}</h1>
+        <h1 className="m-0">{capitalizar(pokemon.name)}</h1>
       </div>
-      <div style={{ display: "flex", gap: "4px", margin: "4px 0" }}>
+      <div className="flex gap-1 my-1">
         {pokemon.types.map((t) => (
           <TipoChip key={t.type.name} tipo={t.type.name} />
         ))}
       </div>
       <p>Número: {pokemon.id}</p>
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "16px",
-        }}
-      >
+      <div className="flex items-center justify-center gap-4">
         {hayAnterior ? (
           <Link
             href={`/pokemon/${idNumero - 1}${orden ? `?orden=${orden}` : ""}`}
             aria-label="Pokémon anterior"
-            style={{
-              color: textoSobreFondo,
-              fontSize: "24px",
-              textDecoration: "none",
-            }}
+            className="text-2xl no-underline"
+            style={{ color: textoSobreFondo }}
           >
             ‹
           </Link>
         ) : (
-          <span style={{ fontSize: "24px", opacity: 0.4 }}>‹</span>
+          <span className="text-2xl opacity-40">‹</span>
         )}
 
         {pokemon.sprites.front_default && (
@@ -151,97 +131,62 @@ export default async function DetallePokemon({
           <Link
             href={`/pokemon/${idNumero + 1}${orden ? `?orden=${orden}` : ""}`}
             aria-label="Pokémon siguiente"
-            style={{
-              color: textoSobreFondo,
-              fontSize: "24px",
-              textDecoration: "none",
-            }}
+            className="text-2xl no-underline"
+            style={{ color: textoSobreFondo }}
           >
             ›
           </Link>
         ) : (
-          <span style={{ fontSize: "24px", opacity: 0.4 }}>›</span>
+          <span className="text-2xl opacity-40">›</span>
         )}
       </div>
 
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "8px",
-          padding: "20px",
-          color: "#000000",
-        }}
-      >
-        <div style={{ display: "flex", gap: "16px", margin: "16px 0" }}>
-          <div style={{ flex: 1, textAlign: "center" }}>
-            <p style={{ fontSize: "12px" }}>{pesoKg} kg</p>
-            <p style={{ fontSize: "8px", color: "#999" }}>Peso</p>
+      <div className="bg-white rounded-lg p-5 text-black">
+        <div className="flex gap-4 my-4">
+          <div className="flex-1 text-center">
+            <p className="text-xs">{pesoKg} kg</p>
+            <p className="text-[8px] text-[#999]">Peso</p>
           </div>
-          <div style={{ width: "1px", backgroundColor: "#eee" }} />
-          <div style={{ flex: 1, textAlign: "center" }}>
-            <p style={{ fontSize: "12px" }}>{alturaMetros} m</p>
-            <p style={{ fontSize: "8px", color: "#999" }}>Altura</p>
+          <div className="w-px bg-[#eee]" />
+          <div className="flex-1 text-center">
+            <p className="text-xs">{alturaMetros} m</p>
+            <p className="text-[8px] text-[#999]">Altura</p>
           </div>
-          <div style={{ width: "1px", backgroundColor: "#eee" }} />
-          <div style={{ flex: 1, textAlign: "center" }}>
+          <div className="w-px bg-[#eee]" />
+          <div className="flex-1 text-center">
             {pokemon.abilities.map((a) => (
-              <p key={a.ability.name} style={{ fontSize: "12px", margin: 0 }}>
+              <p key={a.ability.name} className="text-xs m-0">
                 {a.ability.name}
               </p>
             ))}
-            <p style={{ fontSize: "8px", color: "#999", marginTop: "4px" }}>
-              Habilidades
-            </p>
+            <p className="text-[8px] text-[#999] mt-1">Habilidades</p>
           </div>
         </div>
 
         <p>{descripcion}</p>
 
         <h2
-          style={{
-            fontSize: "16px",
-            fontWeight: 700,
-            textAlign: "center",
-            margin: "16px 0 8px",
-            color: colores[0],
-          }}
+          className="text-base font-bold text-center my-4"
+          style={{ color: colores[0] }}
         >
           Base Stats
         </h2>
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul className="list-none p-0">
           {pokemon.stats.map((s) => (
-            <li
-              key={s.stat.name}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                margin: "4px 0",
-              }}
-            >
-              <span style={{ width: "60px", fontSize: "12px" }}>
+            <li key={s.stat.name} className="flex items-center gap-2 my-1">
+              <span className="w-[60px] text-xs">
                 {nombresPorStat[s.stat.name] || s.stat.name}
               </span>
-              <div
-                style={{
-                  flex: 1,
-                  height: "8px",
-                  backgroundColor: "#eee",
-                  borderRadius: "4px",
-                  overflow: "hidden",
-                }}
-              >
+              <div className="flex-1 h-2 bg-[#eee] rounded overflow-hidden">
                 <div
+                  className="h-full"
                   style={{
                     width: `${(s.base_stat / STAT_MAXIMO) * 100}%`,
-                    height: "100%",
                     backgroundColor: colores[0],
                   }}
                 />
               </div>
-              <span style={{ width: "30px", fontSize: "12px" }}>
-                {s.base_stat}
-              </span>
+              <span className="w-[30px] text-xs">{s.base_stat}</span>
             </li>
           ))}
         </ul>

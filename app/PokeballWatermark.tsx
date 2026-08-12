@@ -8,12 +8,10 @@ export default function PokeballWatermark() {
       width={380}
       height={380}
       aria-hidden="true"
+      className="absolute opacity-10 pointer-events-none"
       style={{
-        position: "absolute",
         top: "-90px",
         right: "-60px",
-        opacity: 0.1,
-        pointerEvents: "none",
       }}
     />
   );
