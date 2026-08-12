@@ -35,65 +35,19 @@ export function PokemonCardSkeleton() {
       role="status"
       aria-busy="true"
       aria-label="Cargando Pokémon"
-      style={{
-        width: CARD_ANCHO,
-        height: CARD_ALTO,
-        position: "relative",
-        borderRadius: "8px",
-        boxShadow: "0 1px 3px 1px rgba(0,0,0,0.20)",
-        backgroundColor: "white",
-        overflow: "hidden",
-      }}
+      className="relative rounded-lg bg-white overflow-hidden shadow-[0_1px_3px_1px_rgba(0,0,0,0.20)]"
+      style={{ width: CARD_ANCHO, height: CARD_ALTO }}
     >
+      <div className="absolute top-1 left-2 w-6 h-2 rounded bg-[#e0e0e0] skeleton-shimmer" />
       <div
-        style={{
-          position: "absolute",
-          top: 4,
-          left: 8,
-          width: "24px",
-          height: "8px",
-          borderRadius: "4px",
-          backgroundColor: "#e0e0e0",
-        }}
-        className="skeleton-shimmer"
+        className="absolute left-1/2 -translate-x-1/2 rounded-full bg-[#e0e0e0] skeleton-shimmer"
+        style={{ top: "18px", width: SPRITE_TAMANIO, height: SPRITE_TAMANIO }}
       />
       <div
-        style={{
-          position: "absolute",
-          top: "18px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: SPRITE_TAMANIO,
-          height: SPRITE_TAMANIO,
-          borderRadius: "50%",
-          backgroundColor: "#e0e0e0",
-        }}
-        className="skeleton-shimmer"
-      />
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: NOMBRE_ALTO,
-          backgroundColor: "#f0f0f0",
-          borderRadius: "0 0 8px 8px",
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-          paddingBottom: "8px",
-        }}
+        className="absolute bottom-0 left-0 right-0 rounded-b-lg bg-[#f0f0f0] flex items-end justify-center pb-2"
+        style={{ height: NOMBRE_ALTO }}
       >
-        <div
-          style={{
-            width: "60px",
-            height: "10px",
-            borderRadius: "4px",
-            backgroundColor: "#e0e0e0",
-          }}
-          className="skeleton-shimmer"
-        />
+        <div className="w-[60px] h-2.5 rounded bg-[#e0e0e0] skeleton-shimmer" />
       </div>
     </div>
   );
@@ -119,42 +73,23 @@ function PokemonCard({ id, name }: { id: number; name: string }) {
   const colorFondo = coloresPorTipo[detalle.types[0]?.type.name] || "#eee";
 
   return (
-    <Link
-      href={`/pokemon/${detalle.id}`}
-      style={{ textDecoration: "none", color: "inherit" }}
-    >
+    <Link href={`/pokemon/${detalle.id}`} className="no-underline text-inherit">
       <div
-        style={{
-          width: CARD_ANCHO,
-          height: CARD_ALTO,
-          position: "relative",
-          borderRadius: "8px",
-          boxShadow: "0 1px 3px 1px rgba(0,0,0,0.20)",
-          backgroundColor: "white",
-        }}
+        className="relative rounded-lg bg-white shadow-[0_1px_3px_1px_rgba(0,0,0,0.20)]"
+        style={{ width: CARD_ANCHO, height: CARD_ALTO }}
       >
         <p
-          style={{
-            position: "absolute",
-            top: 4,
-            left: 8,
-            right: 8,
-            height: NUMERO_ALTO,
-            margin: 0,
-            fontSize: "8px",
-            color: "#999",
-          }}
+          className="absolute top-1 left-2 right-2 m-0 text-[8px] text-[#999]"
+          style={{ height: NUMERO_ALTO }}
         >
           #{detalle.id}
         </p>
 
         {detalle.sprites.front_default && (
           <div
+            className="absolute left-1/2 -translate-x-1/2"
             style={{
-              position: "absolute",
               top: "18px",
-              left: "50%",
-              transform: "translateX(-50%)",
               width: SPRITE_TAMANIO,
               height: SPRITE_TAMANIO,
             }}
@@ -164,29 +99,16 @@ function PokemonCard({ id, name }: { id: number; name: string }) {
               alt={name}
               fill
               sizes="72px"
-              style={{ objectFit: "contain" }}
+              className="object-contain"
             />
           </div>
         )}
 
         <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: NOMBRE_ALTO,
-            backgroundColor: `${colorFondo}33`,
-            borderRadius: "0 0 8px 8px",
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            paddingBottom: "4px",
-          }}
+          className="absolute bottom-0 left-0 right-0 rounded-b-lg flex items-end justify-center pb-1"
+          style={{ height: NOMBRE_ALTO, backgroundColor: `${colorFondo}33` }}
         >
-          <span style={{ fontSize: "10px", textAlign: "center" }}>
-            {capitalizar(name)}
-          </span>
+          <span className="text-[10px] text-center">{capitalizar(name)}</span>
         </div>
       </div>
     </Link>
@@ -277,52 +199,16 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   return (
     <div>
       <div
-        style={{
-          backgroundColor: "var(--color-primary)",
-          padding: "12px 12px 16px",
-        }}
+        className="px-3 pt-3 pb-4"
+        style={{ backgroundColor: "var(--color-primary)" }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            marginBottom: "16px",
-          }}
-        >
+        <div className="flex items-center gap-2 mb-4">
           <Image src="/pokeball.svg" alt="" width={24} height={24} />
-          <h1
-            style={{
-              color: "white",
-              fontSize: "24px",
-              fontWeight: 700,
-              margin: 0,
-            }}
-          >
-            Pokédex
-          </h1>
+          <h1 className="text-white text-2xl font-bold m-0">Pokédex</h1>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              width: "280px",
-              height: "32px",
-              borderRadius: "16px",
-              backgroundColor: "white",
-              padding: "8px 16px 8px 12px",
-              boxSizing: "border-box",
-            }}
-          >
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 w-[280px] h-8 rounded-2xl bg-white pl-3 pr-4 py-2 box-border">
             <Image
               src="/search.svg"
               alt=""
@@ -330,7 +216,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
               height={16}
               aria-hidden="true"
             />
-            <label htmlFor="busqueda-pokemon" style={{ display: "none" }}>
+            <label htmlFor="busqueda-pokemon" className="hidden">
               Buscar Pokémon por nombre
             </label>
             <input
@@ -339,12 +225,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
               placeholder="Buscar Pokémon..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              style={{
-                border: "none",
-                outline: "none",
-                flex: 1,
-                fontSize: "14px",
-              }}
+              className="border-none outline-none flex-1 text-sm"
             />
             {busqueda && (
               <button
@@ -357,20 +238,12 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
             )}
           </div>
 
-          <div style={{ position: "relative" }}>
+          <div className="relative">
             <button
               onClick={() => setModalAbierto(true)}
               aria-label="Ordenar lista"
               aria-haspopup="dialog"
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "50%",
-                border: "none",
-                backgroundColor: "white",
-                cursor: "pointer",
-                fontSize: "14px",
-              }}
+              className="w-8 h-8 rounded-full border-none bg-white cursor-pointer text-sm"
             >
               #
             </button>
@@ -389,8 +262,8 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
         </div>
       </div>
 
-      <div style={{ margin: "12px" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+      <div className="m-3">
+        <div className="flex flex-wrap gap-1.5">
           {TIPOS_DISPONIBLES.map((tipo) => {
             const seleccionado = tiposSeleccionados.includes(tipo);
             return (
@@ -398,10 +271,8 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
                 key={tipo}
                 onClick={() => alternarTipo(tipo)}
                 aria-pressed={seleccionado}
+                className="text-[10px] px-2 py-0.5 rounded-[10px] cursor-pointer"
                 style={{
-                  fontSize: "10px",
-                  padding: "2px 8px",
-                  borderRadius: "10px",
                   border: seleccionado
                     ? `2px solid ${coloresPorTipo[tipo]}`
                     : "1px solid #ccc",
@@ -409,7 +280,6 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
                     ? coloresPorTipo[tipo]
                     : "white",
                   color: seleccionado ? "white" : "#333",
-                  cursor: "pointer",
                 }}
               >
                 {tipo}
@@ -420,15 +290,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
         {tiposSeleccionados.length > 0 && (
           <button
             onClick={limpiarFiltros}
-            style={{
-              marginTop: "8px",
-              fontSize: "12px",
-              background: "none",
-              border: "none",
-              color: "#666",
-              cursor: "pointer",
-              textDecoration: "underline",
-            }}
+            className="mt-2 text-xs bg-transparent border-none text-[#666] cursor-pointer underline"
           >
             Limpiar filtros
           </button>
@@ -436,25 +298,15 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
       </div>
 
       {ordenados.length === 0 ? (
-        <p style={{ margin: "12px" }}>
-          No se encontró ningún Pokémon con esos criterios.
-        </p>
+        <p className="m-3">No se encontró ningún Pokémon con esos criterios.</p>
       ) : (
         <div
           ref={contenedorRef}
-          style={{
-            height: "640px",
-            overflow: "auto",
-            position: "relative",
-            padding: "0 12px",
-          }}
+          className="h-[640px] overflow-auto relative px-3"
         >
           <div
-            style={{
-              height: `${virtualizer.getTotalSize()}px`,
-              position: "relative",
-              width: "100%",
-            }}
+            className="relative w-full"
+            style={{ height: `${virtualizer.getTotalSize()}px` }}
           >
             {virtualizer.getVirtualItems().map((filaVirtual) => {
               const inicio = filaVirtual.index * COLUMNAS;
@@ -466,14 +318,10 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
               return (
                 <div
                   key={filaVirtual.key}
+                  className="absolute top-0 left-0 w-full flex"
                   style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
                     height: `${filaVirtual.size}px`,
                     transform: `translateY(${filaVirtual.start}px)`,
-                    display: "flex",
                     gap: `${GAP}px`,
                   }}
                 >
