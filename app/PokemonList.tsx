@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useMemo, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import Link from "next/link";
@@ -150,14 +150,6 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   }, [busqueda]);
 
   useEffect(() => {
-    TIPOS_DISPONIBLES.forEach((tipo) => {
-      getPokemonPorTipo(tipo).then((nombres) => {
-        setNombresPorTipo((prev) => ({ ...prev, [tipo]: nombres }));
-      });
-    });
-  }, []);
-
-  useEffect(() => {
     contenedorRef.current?.scrollTo({ top: 0 });
   }, [orden, busquedaDebounced, tiposSeleccionados]);
 
@@ -166,6 +158,12 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   }
 
   function alternarTipo(tipo: string) {
+    if (!tiposSeleccionados.includes(tipo) && !nombresPorTipo[tipo]) {
+      getPokemonPorTipo(tipo).then((nombres) => {
+        setNombresPorTipo((prev) => ({ ...prev, [tipo]: nombres }));
+      });
+    }
+
     setTiposSeleccionados((prev) =>
       prev.includes(tipo) ? prev.filter((t) => t !== tipo) : [...prev, tipo]
     );
@@ -175,28 +173,32 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
     setTiposSeleccionados([]);
   }
 
-  const filtrados = pokemones.filter((pokemon) => {
-    const coincideBusqueda = normalizar(pokemon.name).includes(
-      normalizar(busquedaDebounced)
-    );
+  const filtrados = useMemo(() => {
+    return pokemones.filter((pokemon) => {
+      const coincideBusqueda = normalizar(pokemon.name).includes(
+        normalizar(busquedaDebounced)
+      );
 
-    if (tiposSeleccionados.length === 0) {
-      return coincideBusqueda;
-    }
+      if (tiposSeleccionados.length === 0) {
+        return coincideBusqueda;
+      }
 
-    const coincideTipo = tiposSeleccionados.every((tipo) =>
-      nombresPorTipo[tipo]?.includes(pokemon.name)
-    );
+      const coincideTipo = tiposSeleccionados.every((tipo) =>
+        nombresPorTipo[tipo]?.includes(pokemon.name)
+      );
 
-    return coincideBusqueda && coincideTipo;
-  });
+      return coincideBusqueda && coincideTipo;
+    });
+  }, [pokemones, busquedaDebounced, tiposSeleccionados, nombresPorTipo]);
 
-  const ordenados = [...filtrados].sort((a, b) => {
-    if (orden === "nombre") {
-      return a.name.localeCompare(b.name);
-    }
-    return a.id - b.id;
-  });
+  const ordenados = useMemo(() => {
+    return [...filtrados].sort((a, b) => {
+      if (orden === "nombre") {
+        return a.name.localeCompare(b.name);
+      }
+      return a.id - b.id;
+    });
+  }, [filtrados, orden]);
 
   const filas = Math.ceil(ordenados.length / COLUMNAS);
 
