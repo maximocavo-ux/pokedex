@@ -53,7 +53,15 @@ export function PokemonCardSkeleton() {
   );
 }
 
-function PokemonCard({ id, name }: { id: number; name: string }) {
+function PokemonCard({
+  id,
+  name,
+  onKeyDown,
+}: {
+  id: number;
+  name: string;
+  onKeyDown?: (e: React.KeyboardEvent) => void;
+}) {
   const [detalle, setDetalle] = useState<Pokemon | null>(null);
 
   useEffect(() => {
@@ -73,7 +81,12 @@ function PokemonCard({ id, name }: { id: number; name: string }) {
   const colorFondo = coloresPorTipo[detalle.types[0]?.type.name] || "#eee";
 
   return (
-    <Link href={`/pokemon/${detalle.id}`} className="no-underline text-inherit">
+    <Link
+      id={`card-${detalle.id}`}
+      href={`/pokemon/${detalle.id}`}
+      className="no-underline text-inherit"
+      onKeyDown={onKeyDown}
+    >
       <div
         className="relative rounded-lg bg-white shadow-[0_1px_3px_1px_rgba(0,0,0,0.20)]"
         style={{ width: CARD_ANCHO, height: CARD_ALTO }}
@@ -193,6 +206,36 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
     estimateSize: () => CARD_ALTO + GAP,
     overscan: 8,
   });
+
+  function moverFoco(indiceActual: number, delta: number) {
+    const nuevoIndice = indiceActual + delta;
+    if (nuevoIndice < 0 || nuevoIndice >= ordenados.length) return;
+
+    const filaDestino = Math.floor(nuevoIndice / COLUMNAS);
+    virtualizer.scrollToIndex(filaDestino, { align: "auto" });
+
+    setTimeout(() => {
+      const pokemonDestino = ordenados[nuevoIndice];
+      const elemento = document.getElementById(`card-${pokemonDestino.id}`);
+      elemento?.focus();
+    }, 50);
+  }
+
+  function manejarTeclaEnCard(e: React.KeyboardEvent, indiceActual: number) {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      moverFoco(indiceActual, 1);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      moverFoco(indiceActual, -1);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      moverFoco(indiceActual, COLUMNAS);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      moverFoco(indiceActual, -COLUMNAS);
+    }
+  }
 
   return (
     <div>
@@ -323,13 +366,17 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
                     gap: `${GAP}px`,
                   }}
                 >
-                  {pokemonesDeFila.map((pokemon) => (
-                    <PokemonCard
-                      key={pokemon.id}
-                      id={pokemon.id}
-                      name={pokemon.name}
-                    />
-                  ))}
+                  {pokemonesDeFila.map((pokemon, indiceEnFila) => {
+                    const indiceGlobal = inicio + indiceEnFila;
+                    return (
+                      <PokemonCard
+                        key={pokemon.id}
+                        id={pokemon.id}
+                        name={pokemon.name}
+                        onKeyDown={(e) => manejarTeclaEnCard(e, indiceGlobal)}
+                      />
+                    );
+                  })}
                 </div>
               );
             })}
