@@ -191,7 +191,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
     count: filas,
     getScrollElement: () => contenedorRef.current,
     estimateSize: () => CARD_ALTO + GAP,
-    overscan: 3,
+    overscan: 8,
   });
 
   return (
