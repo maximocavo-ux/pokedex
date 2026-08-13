@@ -79,7 +79,7 @@ export async function getPokemonList(
   return res.json();
 }
 
-export async function getPokemonDetail(
+async function fetchPokemonDetail(
   idOrName: string | number
 ): Promise<Pokemon | null> {
   const res = await fetchConTimeout(`${BASE_URL}/pokemon/${idOrName}`);
@@ -93,6 +93,24 @@ export async function getPokemonDetail(
   }
 
   return res.json();
+}
+
+const cacheDetalle = new Map<string, Promise<Pokemon | null>>();
+
+export function getPokemonDetail(
+  idOrName: string | number
+): Promise<Pokemon | null> {
+  const clave = String(idOrName);
+
+  if (!cacheDetalle.has(clave)) {
+    const promesa = fetchPokemonDetail(idOrName).catch((error) => {
+      cacheDetalle.delete(clave);
+      throw error;
+    });
+    cacheDetalle.set(clave, promesa);
+  }
+
+  return cacheDetalle.get(clave)!;
 }
 
 export async function getPokemonSpecies(
@@ -116,7 +134,7 @@ export type PokemonPorTipo = {
   }[];
 };
 
-export async function getPokemonPorTipo(tipo: string): Promise<string[]> {
+async function fetchPokemonPorTipo(tipo: string): Promise<string[]> {
   const res = await fetchConTimeout(`${BASE_URL}/type/${tipo}`);
 
   if (!res.ok) {
@@ -125,6 +143,20 @@ export async function getPokemonPorTipo(tipo: string): Promise<string[]> {
 
   const data: PokemonPorTipo = await res.json();
   return data.pokemon.map((p) => p.pokemon.name);
+}
+
+const cachePorTipo = new Map<string, Promise<string[]>>();
+
+export function getPokemonPorTipo(tipo: string): Promise<string[]> {
+  if (!cachePorTipo.has(tipo)) {
+    const promesa = fetchPokemonPorTipo(tipo).catch((error) => {
+      cachePorTipo.delete(tipo);
+      throw error;
+    });
+    cachePorTipo.set(tipo, promesa);
+  }
+
+  return cachePorTipo.get(tipo)!;
 }
 
 export function idDesdeUrl(url: string): number {
