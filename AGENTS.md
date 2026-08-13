@@ -27,7 +27,7 @@ npm run lint      # ESLint
 
 **Performance (TBT, long tasks, etc.):** medir solo sobre `npm run build` + `npm run start`. En `npm run dev`, Turbopack sirve JS sin minificar y con el cliente de HMR, y React corre en modo desarrollo con checks extra — el TBT ahí es siempre mucho más alto y ruidoso, y no refleja la performance real ni sirve para comparar antes/después de un cambio.
 
-No hay `test` ni `typecheck` como scripts separados todavía (pendiente de SETUP-5).
++CI corre lint, typecheck (`npx tsc --noEmit`), test y build en cada push/PR a `main` — ver `.github/workflows/ci.yml` (SETUP-5).
 
 ## Estructura — LEER ANTES DE EDITAR
 
