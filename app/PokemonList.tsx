@@ -92,7 +92,7 @@ function PokemonCard({
         style={{ width: CARD_ANCHO, height: CARD_ALTO }}
       >
         <p
-          className="absolute top-1 left-2 right-2 m-0 text-[8px] text-[#999]"
+          className="absolute top-1 left-2 right-2 m-0 text-[8px] text-[#666]"
           style={{ height: NUMERO_ALTO }}
         >
           #{detalle.id}
