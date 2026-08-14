@@ -6,8 +6,15 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import Link from "next/link";
 import Image from "next/image";
 import type { PokemonLiviano, Pokemon } from "./lib/pokeapi";
-import { getPokemonDetail, getPokemonPorTipo } from "./lib/pokeapi";
 import { coloresPorTipo } from "./coloresPorTipo";
+import { capitalizar } from "./capitalizar";
+import SortByModal from "./SortByModal";
+import {
+  getPokemonDetail,
+  getPokemonPorTipo,
+  getPokemonPorGeneracion,
+  REGIONES,
+} from "./lib/pokeapi";
 import {
   CARD_ANCHO,
   CARD_ALTO,
@@ -15,8 +22,6 @@ import {
   NUMERO_ALTO,
   NOMBRE_ALTO,
 } from "./pokemonCardDimensions";
-import { capitalizar } from "./capitalizar";
-import SortByModal from "./SortByModal";
 
 const TIPOS_DISPONIBLES = Object.keys(coloresPorTipo);
 const COLUMNAS = 3;
@@ -139,6 +144,12 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   const [nombresPorTipo, setNombresPorTipo] = useState<
     Record<string, string[]>
   >({});
+  const [regionesSeleccionadas, setRegionesSeleccionadas] = useState<number[]>(
+    []
+  );
+  const [nombresPorRegion, setNombresPorRegion] = useState<
+    Record<number, string[]>
+  >({});
   const [modalAbierto, setModalAbierto] = useState(false);
   const contenedorRef = useRef<HTMLDivElement>(null);
 
@@ -158,6 +169,17 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   }, []);
 
   useEffect(() => {
+    REGIONES.forEach((region) => {
+      getPokemonPorGeneracion(region.generacion).then((nombres) => {
+        setNombresPorRegion((prev) => ({
+          ...prev,
+          [region.generacion]: nombres,
+        }));
+      });
+    });
+  }, []);
+
+  useEffect(() => {
     contenedorRef.current?.scrollTo({ top: 0 });
   }, [orden, busquedaDebounced, tiposSeleccionados]);
 
@@ -171,8 +193,17 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
     );
   }
 
+  function alternarRegion(generacion: number) {
+    setRegionesSeleccionadas((prev) =>
+      prev.includes(generacion)
+        ? prev.filter((g) => g !== generacion)
+        : [...prev, generacion]
+    );
+  }
+
   function limpiarFiltros() {
     setTiposSeleccionados([]);
+    setRegionesSeleccionadas([]);
   }
   const filtrados = useMemo(() => {
     const busquedaNormalizada = normalizar(busquedaDebounced);
@@ -185,17 +216,32 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
         normalizar(pokemon.name).includes(busquedaNormalizada) ||
         (esBusquedaNumerica && pokemon.id === busquedaComoNumero);
 
-      if (tiposSeleccionados.length === 0) {
-        return coincideBusqueda;
+      if (!coincideBusqueda) {
+        return false;
       }
 
-      const coincideTipo = tiposSeleccionados.every((tipo) =>
-        nombresPorTipo[tipo]?.includes(pokemon.name)
-      );
+      const coincideTipo =
+        tiposSeleccionados.length === 0 ||
+        tiposSeleccionados.every((tipo) =>
+          nombresPorTipo[tipo]?.includes(pokemon.name)
+        );
 
-      return coincideBusqueda && coincideTipo;
+      const coincideRegion =
+        regionesSeleccionadas.length === 0 ||
+        regionesSeleccionadas.some((generacion) =>
+          nombresPorRegion[generacion]?.includes(pokemon.name)
+        );
+
+      return coincideTipo && coincideRegion;
     });
-  }, [pokemones, busquedaDebounced, tiposSeleccionados, nombresPorTipo]);
+  }, [
+    pokemones,
+    busquedaDebounced,
+    tiposSeleccionados,
+    nombresPorTipo,
+    regionesSeleccionadas,
+    nombresPorRegion,
+  ]);
 
   const ordenados = useMemo(() => {
     return [...filtrados].sort((a, b) => {
@@ -336,7 +382,34 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
             );
           })}
         </div>
-        {tiposSeleccionados.length > 0 && (
+
+        <div className="flex flex-wrap gap-1.5 mt-2">
+          {REGIONES.map((region) => {
+            const seleccionada = regionesSeleccionadas.includes(
+              region.generacion
+            );
+            return (
+              <button
+                key={region.generacion}
+                onClick={() => alternarRegion(region.generacion)}
+                aria-pressed={seleccionada}
+                className="text-[10px] px-2 py-0.5 rounded-[10px] cursor-pointer border"
+                style={{
+                  borderColor: seleccionada ? "var(--color-primary)" : "#ccc",
+                  backgroundColor: seleccionada
+                    ? "var(--color-primary)"
+                    : "white",
+                  color: seleccionada ? "white" : "#333",
+                }}
+              >
+                {region.nombre}
+              </button>
+            );
+          })}
+        </div>
+
+        {(tiposSeleccionados.length > 0 ||
+          regionesSeleccionadas.length > 0) && (
           <button
             onClick={limpiarFiltros}
             className="mt-2 text-xs bg-transparent border-none text-[#666] cursor-pointer underline"
