@@ -424,7 +424,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
       ) : (
         <div
           ref={contenedorRef}
-          className="h-[640px] overflow-auto relative px-3"
+          className="h-[calc(100vh-220px)] overflow-auto relative px-3"
         >
           <div
             className="relative w-full"
@@ -440,7 +440,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
               return (
                 <div
                   key={filaVirtual.key}
-                  className="absolute top-0 left-0 w-full flex"
+                  className="absolute top-0 left-0 w-full flex justify-center"
                   style={{
                     height: `${filaVirtual.size}px`,
                     transform: `translateY(${filaVirtual.start}px)`,
