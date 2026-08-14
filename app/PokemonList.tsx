@@ -305,7 +305,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
           <h1 className="text-white text-2xl font-bold m-0">Pokédex</h1>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="flex items-center gap-2 w-[280px] h-8 rounded-2xl bg-white pl-3 pr-4 py-2 box-border">
             <Image
               src="/search.svg"
