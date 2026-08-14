@@ -10,6 +10,7 @@ import { coloresPorTipo } from "./coloresPorTipo";
 import { capitalizar } from "./capitalizar";
 import SortByModal from "./SortByModal";
 import FiltroModal from "./FiltroModal";
+import BotonModoOscuro from "./BotonModoOscuro";
 import {
   getPokemonDetail,
   getPokemonPorTipo,
@@ -98,8 +99,11 @@ function PokemonCard({
         style={{ width: CARD_ANCHO, height: CARD_ALTO }}
       >
         <p
-          className="absolute top-1 left-2 right-2 m-0 text-[8px] text-[#666]"
-          style={{ height: NUMERO_ALTO }}
+          className="absolute top-1 left-2 m-0 text-[8px] px-1.5 py-0.5 rounded-full"
+          style={{
+            color: "#333",
+            backgroundColor: "white",
+          }}
         >
           #{detalle.id}
         </p>
@@ -125,9 +129,14 @@ function PokemonCard({
 
         <div
           className="absolute bottom-0 left-0 right-0 rounded-b-lg flex items-end justify-center pb-1"
-          style={{ height: NOMBRE_ALTO, backgroundColor: `${colorFondo}33` }}
+          style={{ height: NOMBRE_ALTO, backgroundColor: `${colorFondo}66` }}
         >
-          <span className="text-[10px] text-center">{capitalizar(name)}</span>
+          <span
+            className="text-[10px] text-center"
+            style={{ color: "var(--color-dark)" }}
+          >
+            {capitalizar(name)}
+          </span>
         </div>
       </div>
     </Link>
@@ -333,6 +342,9 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
         <div className="flex items-center gap-2 mb-4">
           <Image src="/pokeball.svg" alt="" width={24} height={24} />
           <h1 className="text-white text-2xl font-bold m-0">Pokédex</h1>
+          <div className="ml-auto">
+            <BotonModoOscuro />
+          </div>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
