@@ -155,6 +155,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   const [modalTiposAbierto, setModalTiposAbierto] = useState(false);
   const [modalRegionesAbierto, setModalRegionesAbierto] = useState(false);
   const contenedorRef = useRef<HTMLDivElement>(null);
+  const esPrimerRender = useRef(true);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -183,8 +184,37 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   }, []);
 
   useEffect(() => {
+    if (esPrimerRender.current) {
+      esPrimerRender.current = false;
+      return;
+    }
     contenedorRef.current?.scrollTo({ top: 0 });
-  }, [orden, busquedaDebounced, tiposSeleccionados]);
+  }, [orden, busquedaDebounced, tiposSeleccionados, regionesSeleccionadas]);
+
+  useEffect(() => {
+    const guardada = sessionStorage.getItem("scrollLista");
+    if (!guardada) return;
+
+    const posicion = Number(guardada);
+    if (Number.isNaN(posicion) || posicion === 0) return;
+
+    let intentos = 0;
+    const intervalo = setInterval(() => {
+      const contenedor = contenedorRef.current;
+      intentos++;
+
+      if (contenedor && contenedor.scrollHeight > posicion) {
+        contenedor.scrollTo({ top: posicion });
+        clearInterval(intervalo);
+      }
+
+      if (intentos > 20) {
+        clearInterval(intervalo);
+      }
+    }, 50);
+
+    return () => clearInterval(intervalo);
+  }, []);
 
   function cambiarOrden(nuevoOrden: string) {
     router.push(`?orden=${nuevoOrden}`);
@@ -461,6 +491,12 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
       ) : (
         <div
           ref={contenedorRef}
+          onScroll={(e) =>
+            sessionStorage.setItem(
+              "scrollLista",
+              String(e.currentTarget.scrollTop)
+            )
+          }
           className="h-[calc(100vh-152px)] overflow-auto relative px-3 pt-3 "
         >
           <div
