@@ -58,7 +58,7 @@ export default function FiltroModal({
       aria-modal="true"
       aria-label={titulo}
       tabIndex={-1}
-      className="absolute top-10 right-0 w-[280px] rounded-xl p-1 z-10"
+      className="absolute top-10 left-0 w-[260px] max-w-[calc(100vw-24px)] rounded-xl p-1 z-10"
       style={{
         backgroundColor: "var(--color-primary)",
         boxShadow: "var(--elevation-2)",
