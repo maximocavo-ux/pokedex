@@ -9,6 +9,7 @@ import type { PokemonLiviano, Pokemon } from "./lib/pokeapi";
 import { coloresPorTipo } from "./coloresPorTipo";
 import { capitalizar } from "./capitalizar";
 import SortByModal from "./SortByModal";
+import FiltroModal from "./FiltroModal";
 import {
   getPokemonDetail,
   getPokemonPorTipo,
@@ -151,6 +152,8 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
     Record<number, string[]>
   >({});
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [modalTiposAbierto, setModalTiposAbierto] = useState(false);
+  const [modalRegionesAbierto, setModalRegionesAbierto] = useState(false);
   const contenedorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -354,77 +357,111 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
               />
             )}
           </div>
+
+          <div className="relative">
+            <button
+              onClick={() => setModalTiposAbierto((prev) => !prev)}
+              aria-haspopup="dialog"
+              className="h-8 px-3 rounded-2xl border-none bg-white cursor-pointer text-xs"
+            >
+              Tipos
+              {tiposSeleccionados.length > 0 &&
+                ` (${tiposSeleccionados.length})`}
+            </button>
+
+            {modalTiposAbierto && (
+              <FiltroModal
+                titulo="Tipos"
+                onCerrar={() => setModalTiposAbierto(false)}
+              >
+                {TIPOS_DISPONIBLES.map((tipo) => {
+                  const seleccionado = tiposSeleccionados.includes(tipo);
+                  return (
+                    <button
+                      key={tipo}
+                      onClick={() => alternarTipo(tipo)}
+                      aria-pressed={seleccionado}
+                      className="text-[10px] px-2 py-0.5 rounded-[10px] cursor-pointer"
+                      style={{
+                        border: seleccionado
+                          ? `2px solid ${coloresPorTipo[tipo]}`
+                          : "1px solid #ccc",
+                        backgroundColor: seleccionado
+                          ? coloresPorTipo[tipo]
+                          : "white",
+                        color: seleccionado ? "white" : "#333",
+                      }}
+                    >
+                      {tipo}
+                    </button>
+                  );
+                })}
+              </FiltroModal>
+            )}
+          </div>
+
+          <div className="relative">
+            <button
+              onClick={() => setModalRegionesAbierto((prev) => !prev)}
+              aria-haspopup="dialog"
+              className="h-8 px-3 rounded-2xl border-none bg-white cursor-pointer text-xs"
+            >
+              Regiones
+              {regionesSeleccionadas.length > 0 &&
+                ` (${regionesSeleccionadas.length})`}
+            </button>
+
+            {modalRegionesAbierto && (
+              <FiltroModal
+                titulo="Regiones"
+                onCerrar={() => setModalRegionesAbierto(false)}
+              >
+                {REGIONES.map((region) => {
+                  const seleccionada = regionesSeleccionadas.includes(
+                    region.generacion
+                  );
+                  return (
+                    <button
+                      key={region.generacion}
+                      onClick={() => alternarRegion(region.generacion)}
+                      aria-pressed={seleccionada}
+                      className="text-[10px] px-2 py-0.5 rounded-[10px] cursor-pointer border"
+                      style={{
+                        borderColor: seleccionada
+                          ? "var(--color-primary)"
+                          : "#ccc",
+                        backgroundColor: seleccionada
+                          ? "var(--color-primary)"
+                          : "white",
+                        color: seleccionada ? "white" : "#333",
+                      }}
+                    >
+                      {region.nombre}
+                    </button>
+                  );
+                })}
+              </FiltroModal>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="m-3">
-        <div className="flex flex-wrap gap-1.5">
-          {TIPOS_DISPONIBLES.map((tipo) => {
-            const seleccionado = tiposSeleccionados.includes(tipo);
-            return (
-              <button
-                key={tipo}
-                onClick={() => alternarTipo(tipo)}
-                aria-pressed={seleccionado}
-                className="text-[10px] px-2 py-0.5 rounded-[10px] cursor-pointer"
-                style={{
-                  border: seleccionado
-                    ? `2px solid ${coloresPorTipo[tipo]}`
-                    : "1px solid #ccc",
-                  backgroundColor: seleccionado
-                    ? coloresPorTipo[tipo]
-                    : "white",
-                  color: seleccionado ? "white" : "#333",
-                }}
-              >
-                {tipo}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="flex flex-wrap gap-1.5 mt-2">
-          {REGIONES.map((region) => {
-            const seleccionada = regionesSeleccionadas.includes(
-              region.generacion
-            );
-            return (
-              <button
-                key={region.generacion}
-                onClick={() => alternarRegion(region.generacion)}
-                aria-pressed={seleccionada}
-                className="text-[10px] px-2 py-0.5 rounded-[10px] cursor-pointer border"
-                style={{
-                  borderColor: seleccionada ? "var(--color-primary)" : "#ccc",
-                  backgroundColor: seleccionada
-                    ? "var(--color-primary)"
-                    : "white",
-                  color: seleccionada ? "white" : "#333",
-                }}
-              >
-                {region.nombre}
-              </button>
-            );
-          })}
-        </div>
-
-        {(tiposSeleccionados.length > 0 ||
-          regionesSeleccionadas.length > 0) && (
+      {(tiposSeleccionados.length > 0 || regionesSeleccionadas.length > 0) && (
+        <div className="m-3">
           <button
             onClick={limpiarFiltros}
-            className="mt-2 text-xs bg-transparent border-none text-[#666] cursor-pointer underline"
+            className="text-xs bg-transparent border-none text-[#666] cursor-pointer underline"
           >
             Limpiar filtros
           </button>
-        )}
-      </div>
-
+        </div>
+      )}
       {ordenados.length === 0 ? (
         <p className="m-3">No se encontró ningún Pokémon con esos criterios.</p>
       ) : (
         <div
           ref={contenedorRef}
-          className="h-[calc(100vh-220px)] overflow-auto relative px-3"
+          className="h-[calc(100vh-152px)] overflow-auto relative px-3 pt-3 "
         >
           <div
             className="relative w-full"
