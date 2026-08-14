@@ -67,7 +67,9 @@ export default function SortByModal({
           width={16}
           height={16}
         />
-        <span className="text-[10px] text-[#1d1d1d]">{etiqueta}</span>
+        <span className="text-[10px]" style={{ color: "var(--color-dark)" }}>
+          {etiqueta}
+        </span>
       </button>
     );
   }
