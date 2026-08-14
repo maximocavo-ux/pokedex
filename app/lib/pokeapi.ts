@@ -163,3 +163,48 @@ export function idDesdeUrl(url: string): number {
   const match = url.match(/\/pokemon\/(\d+)\//);
   return match ? Number(match[1]) : 0;
 }
+
+export const REGIONES = [
+  { nombre: "Kanto", generacion: 1 },
+  { nombre: "Johto", generacion: 2 },
+  { nombre: "Hoenn", generacion: 3 },
+  { nombre: "Sinnoh", generacion: 4 },
+  { nombre: "Teselia", generacion: 5 },
+  { nombre: "Kalos", generacion: 6 },
+  { nombre: "Alola", generacion: 7 },
+  { nombre: "Galar", generacion: 8 },
+  { nombre: "Paldea", generacion: 9 },
+];
+
+export type PokemonPorGeneracion = {
+  pokemon_species: NamedAPIResource[];
+};
+
+async function fetchPokemonPorGeneracion(
+  generacion: number
+): Promise<string[]> {
+  const res = await fetchConTimeout(`${BASE_URL}/generation/${generacion}`);
+
+  if (!res.ok) {
+    throw new Error(
+      `Error al obtener la generación ${generacion}: ${res.status}`
+    );
+  }
+
+  const data: PokemonPorGeneracion = await res.json();
+  return data.pokemon_species.map((especie) => especie.name);
+}
+
+const cachePorGeneracion = new Map<number, Promise<string[]>>();
+
+export function getPokemonPorGeneracion(generacion: number): Promise<string[]> {
+  if (!cachePorGeneracion.has(generacion)) {
+    const promesa = fetchPokemonPorGeneracion(generacion).catch((error) => {
+      cachePorGeneracion.delete(generacion);
+      throw error;
+    });
+    cachePorGeneracion.set(generacion, promesa);
+  }
+
+  return cachePorGeneracion.get(generacion)!;
+}
