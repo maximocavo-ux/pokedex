@@ -150,6 +150,14 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   }, [busqueda]);
 
   useEffect(() => {
+    TIPOS_DISPONIBLES.forEach((tipo) => {
+      getPokemonPorTipo(tipo).then((nombres) => {
+        setNombresPorTipo((prev) => ({ ...prev, [tipo]: nombres }));
+      });
+    });
+  }, []);
+
+  useEffect(() => {
     contenedorRef.current?.scrollTo({ top: 0 });
   }, [orden, busquedaDebounced, tiposSeleccionados]);
 
@@ -158,12 +166,6 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   }
 
   function alternarTipo(tipo: string) {
-    if (!tiposSeleccionados.includes(tipo) && !nombresPorTipo[tipo]) {
-      getPokemonPorTipo(tipo).then((nombres) => {
-        setNombresPorTipo((prev) => ({ ...prev, [tipo]: nombres }));
-      });
-    }
-
     setTiposSeleccionados((prev) =>
       prev.includes(tipo) ? prev.filter((t) => t !== tipo) : [...prev, tipo]
     );
@@ -172,12 +174,16 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
   function limpiarFiltros() {
     setTiposSeleccionados([]);
   }
-
   const filtrados = useMemo(() => {
+    const busquedaNormalizada = normalizar(busquedaDebounced);
+    const busquedaComoNumero = Number(busquedaDebounced.trim());
+    const esBusquedaNumerica =
+      busquedaDebounced.trim() !== "" && !Number.isNaN(busquedaComoNumero);
+
     return pokemones.filter((pokemon) => {
-      const coincideBusqueda = normalizar(pokemon.name).includes(
-        normalizar(busquedaDebounced)
-      );
+      const coincideBusqueda =
+        normalizar(pokemon.name).includes(busquedaNormalizada) ||
+        (esBusquedaNumerica && pokemon.id === busquedaComoNumero);
 
       if (tiposSeleccionados.length === 0) {
         return coincideBusqueda;
@@ -260,12 +266,12 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
               aria-hidden="true"
             />
             <label htmlFor="busqueda-pokemon" className="hidden">
-              Buscar Pokémon por nombre
+              Buscar Pokémon por nombre o número
             </label>
             <input
               id="busqueda-pokemon"
               type="search"
-              placeholder="Buscar Pokémon..."
+              placeholder="Buscar por nombre o número..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               className="border-none outline-none flex-1 text-sm"
