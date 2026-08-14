@@ -1,3 +1,6 @@
 export function capitalizar(texto: string) {
-  return texto.charAt(0).toUpperCase() + texto.slice(1);
+  return texto
+    .split("-")
+    .map((parte) => parte.charAt(0).toUpperCase() + parte.slice(1))
+    .join("-");
 }
