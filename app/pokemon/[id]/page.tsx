@@ -141,7 +141,10 @@ export default async function DetallePokemon({
         )}
       </div>
 
-      <div className="bg-white rounded-lg p-5 text-black">
+      <div
+        className="bg-white rounded-lg p-5"
+        style={{ color: "var(--color-dark)" }}
+      >
         <div className="flex gap-4 my-4">
           <div className="flex-1 text-center">
             <p className="text-xs">{pesoKg} kg</p>
