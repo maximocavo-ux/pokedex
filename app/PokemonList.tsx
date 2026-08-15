@@ -16,6 +16,7 @@ import {
   getPokemonPorTipo,
   getPokemonPorGeneracion,
   REGIONES,
+  spriteUrl,
 } from "./lib/pokeapi";
 import {
   CARD_ANCHO,
@@ -108,24 +109,22 @@ function PokemonCard({
           #{detalle.id}
         </p>
 
-        {detalle.sprites.front_default && (
-          <div
-            className="absolute left-1/2 -translate-x-1/2"
-            style={{
-              top: "18px",
-              width: SPRITE_TAMANIO,
-              height: SPRITE_TAMANIO,
-            }}
-          >
-            <Image
-              src={detalle.sprites.front_default}
-              alt={name}
-              fill
-              sizes="72px"
-              className="object-contain"
-            />
-          </div>
-        )}
+        <div
+          className="absolute left-1/2 -translate-x-1/2"
+          style={{
+            top: "18px",
+            width: SPRITE_TAMANIO,
+            height: SPRITE_TAMANIO,
+          }}
+        >
+          <Image
+            src={spriteUrl(id)}
+            alt={name}
+            fill
+            sizes="72px"
+            className="object-contain"
+          />
+        </div>
 
         <div
           className="absolute bottom-0 left-0 right-0 rounded-b-lg flex items-end justify-center pb-1"

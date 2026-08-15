@@ -208,3 +208,7 @@ export function getPokemonPorGeneracion(generacion: number): Promise<string[]> {
 
   return cachePorGeneracion.get(generacion)!;
 }
+
+export function spriteUrl(id: number): string {
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+}
