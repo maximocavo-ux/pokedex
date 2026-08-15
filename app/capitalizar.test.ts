@@ -17,4 +17,8 @@ describe("capitalizar", () => {
   it("maneja un string vacío sin romperse", () => {
     expect(capitalizar("")).toBe("");
   });
+
+  it("maneja un nombre con dos guiones seguidos", () => {
+    expect(capitalizar("ho--oh")).toBe("Ho--Oh");
+  });
 });
