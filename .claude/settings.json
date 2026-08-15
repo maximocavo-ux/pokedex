@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev)",
+      "Bash(npm run build)",
+      "Bash(npm run lint)",
+      "Bash(npm run test)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx vitest run:*)",
+      "Bash(git status)",
+      "Bash(git branch)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(lsof -ti:3000)"
+    ],
+    "ask": [
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(git merge:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git checkout main)",
+      "Bash(rm -rf:*)"
+    ]
+  }
+}
