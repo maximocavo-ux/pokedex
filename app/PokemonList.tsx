@@ -65,10 +65,12 @@ function PokemonCard({
   id,
   name,
   onKeyDown,
+  prioridad,
 }: {
   id: number;
   name: string;
   onKeyDown?: (e: React.KeyboardEvent) => void;
+  prioridad?: boolean;
 }) {
   const [detalle, setDetalle] = useState<Pokemon | null>(null);
 
@@ -123,6 +125,8 @@ function PokemonCard({
             fill
             sizes="72px"
             className="object-contain"
+            loading={prioridad ? "eager" : undefined}
+            fetchPriority={prioridad ? "high" : undefined}
           />
         </div>
 
@@ -539,6 +543,7 @@ function ListaConOrden({ pokemones }: { pokemones: PokemonLiviano[] }) {
                         id={pokemon.id}
                         name={pokemon.name}
                         onKeyDown={(e) => manejarTeclaEnCard(e, indiceGlobal)}
+                        prioridad={indiceGlobal < COLUMNAS * 4}
                       />
                     );
                   })}
